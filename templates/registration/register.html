@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'news/css/letter_glitch.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/forms.css' %}">
+{% endblock %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <div class="letter-glitch-container">
+        <div class="glitch-vignette center"></div>
+        <div class="glitch-vignette outer"></div>
+    </div>
+    
+    <div class="form-card-wrapper">
+        <div class="glass-card-register"> <h2>Регистрация</h2>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'news/js/letter_glitch.js' %}"></script>
+{% endblock %}

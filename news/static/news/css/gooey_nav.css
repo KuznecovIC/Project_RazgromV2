@@ -1,0 +1,443 @@
+/* gooey_nav.css */
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700");
+
+:root {
+  --color-1: #4a90e2;
+  --color-2: #bd10e0;
+  --color-3: #f5a623;
+  --color-4: #50e3c2;
+  --sun-glow: radial-gradient(circle at center, #ffde00 0%, #f5a623 70%, #e67e22 100%);
+  --moon-glow: radial-gradient(circle at center, #e0e0e0 0%, #b0b0b0 70%, #909090 100%);
+}
+
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  background: #f7f7f7;
+  color: #313131;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center; /* Центрируем основную навигацию */
+  align-items: center;
+  gap: 20px;
+  background: rgba(247, 247, 247, 0.92);
+  backdrop-filter: blur(8px);
+  transition: all 0.5s ease;
+}
+
+.header-right-side {
+    position: absolute;
+    right: 30px; /* Отступ справа */
+    top: 50%; /* Смещаем на 50% вниз */
+    transform: translateY(-50%); /* Корректируем вертикальное выравнивание */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.gooey-nav-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  filter: url('#gooey');
+}
+
+.gooey-nav {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+.gooey-nav a {
+  display: flex;
+  align-items: center;
+  padding: 0.6em 1em;
+  color: #313131;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.2em;
+  position: relative;
+  z-index: 2;
+  transition: color 0.4s ease;
+}
+
+.gooey-nav a.active {
+  color: #fff;
+}
+
+.active-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #313131;
+  z-index: 1;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform-origin: center;
+  animation: particleAnimation var(--time) ease-out forwards;
+  z-index: 0;
+}
+
+@keyframes particleAnimation {
+  0% {
+    transform: translate(var(--start-x), var(--start-y)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--end-x), var(--end-y)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Dark theme styles */
+body.dark-theme {
+  background: #1a1a1a;
+  color: #f0f0f0;
+}
+
+body.dark-theme header {
+  background: rgba(26, 26, 26, 0.92);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .gooey-nav a {
+  color: #e0e0e0;
+}
+
+body.dark-theme .gooey-nav a.active {
+  color: #1a1a1a;
+}
+
+body.dark-theme .active-bg {
+  background-color: #f0f0f0;
+}
+
+/* Theme switch - Solar System */
+.theme-switch-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.theme-switch {
+  position: relative;
+  width: 70px;
+  height: 35px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+  transition: all 0.6s ease;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* Day sky background */
+.theme-switch::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #87CEEB 0%, #E0F7FA 70%, #B3E5FC 100%);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Celestial body container */
+.theme-switch::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+}
+
+/* Sun styles (light theme) */
+body:not(.dark-theme) .theme-switch::after {
+  background: var(--sun-glow);
+  box-shadow: 
+    0 0 15px #ffde00,
+    0 0 30px rgba(255, 222, 0, 0.5),
+    0 0 45px rgba(255, 222, 0, 0.2),
+    /* Sun surface details */
+    inset 2px -2px 5px rgba(255, 200, 0, 0.8),
+    inset -3px -3px 8px rgba(230, 126, 34, 0.6),
+    inset 4px 4px 10px rgba(255, 222, 0, 0.4);
+  filter: drop-shadow(0 0 5px rgba(255, 222, 0, 0.7));
+}
+
+/* Moon styles (dark theme) */
+body.dark-theme .theme-switch::after {
+  transform: translateX(35px);
+  background: var(--moon-glow);
+  box-shadow: 
+    /* Moon craters */
+    inset 4px -3px 0 2px rgba(160, 160, 160, 0.8),
+    inset -5px -2px 0 3px rgba(140, 140, 140, 0.7),
+    inset 3px 5px 0 1px rgba(180, 180, 180, 0.6),
+    inset -2px 4px 0 2px rgba(120, 120, 120, 0.7),
+    /* Dark side */
+    inset -6px 0 0 5px rgba(0, 0, 0, 0.15),
+    /* Glow */
+    0 0 10px rgba(224, 224, 224, 0.5),
+    0 0 20px rgba(224, 224, 224, 0.3);
+}
+
+/* Clouds */
+.theme-switch .cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 2;
+  animation: move-cloud 20s linear infinite;
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.8));
+  transition: opacity 0.8s ease;
+}
+
+.theme-switch .cloud:nth-child(1) { 
+  width: 22px; height: 16px; top: 6px; left: -22px;
+  animation-delay: 1s; 
+  border-radius: 50% 50% 0 0 / 60% 60% 0 0; 
+}
+.theme-switch .cloud:nth-child(2) { 
+  width: 18px; height: 14px; top: 18px; left: -18px;
+  animation-delay: 4s; 
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0; 
+}
+.theme-switch .cloud:nth-child(3) { 
+  width: 20px; height: 15px; top: 12px; left: -20px;
+  animation-delay: 7s; 
+  border-radius: 50% 50% 0 0 / 65% 65% 0 0; 
+}
+.theme-switch .cloud:nth-child(4) { 
+  width: 16px; height: 13px; top: 22px; left: -16px;
+  animation-delay: 10s; 
+  border-radius: 50% 50% 0 0 / 75% 75% 0 0; 
+}
+
+/* Stars */
+.theme-switch .star {
+  position: absolute;
+  background-color: #fff;
+  border-radius: 50%;
+  z-index: 2;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.theme-switch .star:nth-child(5) { 
+  width: 3px; height: 3px; top: 8px; left: 15px; 
+  animation-delay: 0.5s; 
+}
+.theme-switch .star:nth-child(6) { 
+  width: 2px; height: 2px; top: 15px; left: 30px; 
+  animation-delay: 1s; 
+}
+.theme-switch .star:nth-child(7) { 
+  width: 2.5px; height: 2.5px; top: 22px; left: 45px; 
+  animation-delay: 1.5s; 
+}
+.theme-switch .star:nth-child(8) { 
+  width: 3px; height: 3px; top: 18px; left: 20px; 
+  animation-delay: 0.8s; 
+}
+
+/* Animations */
+@keyframes move-cloud {
+  0% { transform: translateX(-70px); }
+  100% { transform: translateX(70px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { box-shadow: 0 0 15px #ffde00, 0 0 30px rgba(255, 222, 0, 0.5); }
+  50% { box-shadow: 0 0 20px #ffde00, 0 0 40px rgba(255, 222, 0, 0.7); }
+}
+
+/* Dark theme overrides */
+body.dark-theme .theme-switch {
+  background: #2b2b2b;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+body.dark-theme .theme-switch::before {
+  background: linear-gradient(160deg, #00002e 0%, #1a0038 50%, #2d0047 100%);
+}
+
+body.dark-theme .theme-switch .cloud {
+  opacity: 0;
+}
+
+body.dark-theme .theme-switch .star {
+  opacity: 0.8;
+}
+
+/* Sun animation in light theme */
+body:not(.dark-theme) .theme-switch::after {
+  animation: sun-pulse 3s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 15px 0;
+    gap: 15px;
+  }
+  
+  .gooey-nav a {
+    font-size: 1em;
+    padding: 0.5em 0.9em;
+  }
+  
+  .theme-switch {
+    width: 60px;
+    height: 30px;
+  }
+  
+  .theme-switch::after {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .cloud, .star {
+    transform: scale(0.8);
+  }
+}
+
+/* Accessibility focus styles */
+.gooey-nav a:focus-visible,
+.theme-switch:focus-visible {
+  outline: 2px solid var(--color-1);
+  outline-offset: 2px;
+}
+
+/* Footer styles */
+.footer-container {
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(247, 247, 247, 0.92);
+  backdrop-filter: blur(8px);
+  transition: all 0.5s ease;
+  z-index: 9;
+}
+
+.footer-container p {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #313131;
+  transition: color 0.5s ease;
+}
+
+/* Dark theme footer styles */
+body.dark-theme .footer-container {
+  background: rgba(26, 26, 26, 0.92);
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .footer-container p {
+  color: #f0f0f0;
+}
+
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #313131;
+}
+
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-container .auth-button {
+    padding: 10px 15px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.auth-container .auth-button:hover {
+    background-color: #3a7bc8;
+}
+
+body.dark-theme .auth-container {
+    background: rgba(40, 40, 40, 0.9);
+    color: #f0f0f0;
+}
+
+body.dark-theme .auth-container h2 {
+    color: #f0f0f0;
+}
+
+body.dark-theme .auth-container input {
+    background-color: #333;
+    color: #f0f0f0;
+    border-color: #555;
+}

@@ -1,0 +1,117 @@
+/* forms.css */
+
+/* Контейнер для карточки, центрирует ее по горизонтали и смещает вниз */
+.form-card-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Центрируем по вертикали */
+    min-height: 100vh; /* Используем всю высоту viewport для центрирования */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+/* Стилизация "стеклянной" карточки для входа (login) */
+.glass-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-align: center;
+    transform: translateY(-20px); /* Поднимаем карточку входа немного выше */
+}
+
+/* Стилизация "стеклянной" карточки для регистрации (register) */
+.glass-card-register {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-align: center;
+    transform: translateY(-50px); /* Поднимаем карточку регистрации еще выше */
+}
+
+/* Стилизация элементов формы внутри карточки */
+.glass-card h2, .glass-card-register h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card form, .glass-card-register form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.glass-card form label, .glass-card-register form label {
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.glass-card form input, .glass-card-register form input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.glass-card form input::placeholder, .glass-card-register form input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-card form input:focus, .glass-card-register form input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    outline: none;
+}
+
+.glass-card form button, .glass-card-register form button {
+    padding: 12px;
+    background: #61b3dc;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+}
+
+.glass-card form button:hover, .glass-card-register form button:hover {
+    background: #4a90e2;
+    transform: translateY(-2px);
+}
+
+/* Стилизация ссылок */
+.glass-card p a, .glass-card-register p a {
+    color: #61dca3;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.glass-card p a:hover, .glass-card-register p a:hover {
+    color: #fff;
+    text-decoration: underline;
+}

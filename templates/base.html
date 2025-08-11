@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мой Новостной Ресурс{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'news/css/gooey_nav.css' %}">
+    
+    {% block extra_head %}{% endblock %}
+
+    <style>
+        body {
+            background-color: #000;
+        }
+
+        main {
+            padding-top: 100px;
+            text-align: center;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0;">
+      <defs>
+        <filter id="gooey">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+          <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+      </defs>
+    </svg>
+
+    <header>
+        <nav>
+            <div class="gooey-nav-container">
+                <ul class="gooey-nav">
+                    <li><a href="{% url 'landing' %}">Главная</a></li>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="header-right-side">
+            {% if not user.is_authenticated %}
+                <div class="gooey-nav-container">
+                    <ul class="gooey-nav">
+                        <li><a href="{% url 'login' %}">Войти</a></li>
+                        <li><a href="{% url 'register' %}">Регистрация</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="gooey-nav-container">
+                    <ul class="gooey-nav">
+                        <li><a href="{% url 'logout' %}">Выйти</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch">
+                    <span class="animation-element cloud"></span>
+                    <span class="animation-element cloud"></span>
+                    <span class="animation-element cloud"></span>
+                    <span class="animation-element cloud"></span>
+                    <span class="animation-element star"></span>
+                    <span class="animation-element star"></span>
+                    <span class="animation-element star"></span>
+                    <span class="animation-element star"></span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer-container">
+        <p>&copy; 2024 Мой Новостной Ресурс. Все права защищены.</p>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+
+    <script src="{% static 'news/js/gooey_nav.js' %}"></script>
+</body>
+</html>
