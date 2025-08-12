@@ -15,13 +15,65 @@
     </div>
     
     <div class="form-card-wrapper">
-        <div class="glass-card-register"> <h2>Регистрация</h2>
-            <form action="" method="post">
+        <div class="glass-card-register">
+            <h2>Регистрация</h2>
+            
+            {% if form.errors %}
+                <div class="form-errors">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p class="error-message">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form method="post" novalidate>
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Зарегистрироваться</button>
+                
+                <div class="form-group">
+                    <label for="id_username">Имя пользователя</label>
+                    <input type="text" name="username" id="id_username" 
+                           class="form-input" required
+                           placeholder="Придумайте логин"
+                           value="{{ form.username.value|default_if_none:'' }}">
+                    {% if form.username.errors %}
+                        <div class="field-errors">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_email">Электронная почта</label>
+                    <input type="email" name="email" id="id_email" 
+                           class="form-input" required
+                           placeholder="example@mail.com"
+                           value="{{ form.email.value|default_if_none:'' }}">
+                    {% if form.email.errors %}
+                        <div class="field-errors">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password1">Пароль</label>
+                    <input type="password" name="password1" id="id_password1" 
+                           class="form-input" required
+                           placeholder="Не менее 8 символов">
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password2">Подтвердите пароль</label>
+                    <input type="password" name="password2" id="id_password2" 
+                           class="form-input" required
+                           placeholder="Повторите ваш пароль">
+                    {% if form.password2.errors %}
+                        <div class="field-errors">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="submit-btn">Зарегистрироваться</button>
             </form>
-            <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+            
+            <p class="auth-link">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
         </div>
     </div>
 {% endblock %}

@@ -6,24 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Мой Новостной Ресурс{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'news/css/gooey_nav.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'news/css/messages.css' %}">
     {% block extra_head %}{% endblock %}
-
-    <style>
-        body {
-            background-color: #000;
-        }
-
-        main {
-            padding-top: 100px;
-            text-align: center;
-        }
-        
-        .content-wrapper {
-            position: relative;
-            z-index: 10;
-        }
-    </style>
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0;">
@@ -78,6 +62,21 @@
         </div>
     </header>
 
+    <!-- Контейнер для сообщений -->
+    <div class="gooey-messages-container">
+        {% if messages %}
+        <div class="gooey-messages">
+            {% for message in messages %}
+            <div class="gooey-message gooey-{{ message.tags }}" data-message-id="{{ forloop.counter }}">
+                <span class="gooey-message-content">{{ message }}</span>
+                <button class="gooey-message-close">&times;</button>
+                <div class="gooey-message-particles"></div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
     <main>
         {% block content %}
         {% endblock %}
@@ -88,7 +87,7 @@
     </footer>
 
     {% block extra_scripts %}{% endblock %}
-
     <script src="{% static 'news/js/gooey_nav.js' %}"></script>
+    <script src="{% static 'news/js/messages.js' %}"></script>
 </body>
 </html>

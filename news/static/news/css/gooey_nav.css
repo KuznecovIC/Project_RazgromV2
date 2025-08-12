@@ -441,3 +441,95 @@ body.dark-theme .auth-container input {
     color: #f0f0f0;
     border-color: #555;
 }
+
+.gooey-messages-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    filter: url('#gooey');
+}
+
+.gooey-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.gooey-message {
+    position: relative;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 250px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateX(120%);
+    animation: slideIn 0.5s forwards;
+    z-index: 2;
+}
+
+.gooey-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    z-index: -1;
+}
+
+.gooey-success {
+    background-color: rgba(74, 144, 226, 0.9);
+}
+.gooey-error {
+    background-color: rgba(189, 16, 224, 0.9);
+}
+.gooey-warning {
+    background-color: rgba(245, 166, 35, 0.9);
+}
+.gooey-info {
+    background-color: rgba(80, 227, 194, 0.9);
+}
+
+.gooey-message-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 0;
+    line-height: 1;
+}
+
+.gooey-message-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.gooey-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.7;
+}
+
+@keyframes slideIn {
+    to { transform: translateX(0); }
+}
+
+/* Темная тема */
+body.dark-theme .gooey-message {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}

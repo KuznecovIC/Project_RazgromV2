@@ -2,20 +2,30 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'news/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/landing.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
 {% endblock %}
 
 {% block title %}Главная страница{% endblock %}
 
 {% block content %}
-    <div class="galaxy-bg-container"></div>
-    
-    <div class="content-wrapper">
-        <h1>Добро пожаловать на наш новостной ресурс!</h1>
-        <p>Здесь будут отображаться самые свежие новости.</p>
-    </div>
+    <canvas class="darkveil-canvas"></canvas>
+
+    <div class="content-wrapper">
+        <div class="landing-container">
+            <h1>Добро пожаловать на наш новостной ресурс!</h1>
+            <p>Здесь вы найдете самые свежие новости и актуальные события</p>
+            
+            {% if not user.is_authenticated %}
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-light">Зарегистрироваться</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="https://cdn.jsdelivr.net/npm/ogl/dist/ogl.min.js"></script>
+    <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
 {% endblock %}

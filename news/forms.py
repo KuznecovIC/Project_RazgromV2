@@ -1,28 +1,49 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.core.exceptions import ValidationError
 
-# Форма для регистрации нового пользователя
-class RegistrationForm(forms.ModelForm):
-    # Добавляем поля для пароля, так как они не входят в стандартную модель User
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
+User = get_user_model()  # Получаем активную модель пользователя
+
+class EmailUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-input'})
+    )
     
     class Meta:
-        model = User
-        fields = ('username', 'email')
-        labels = {
-            'username': 'Имя пользователя',
-            'email': 'Электронная почта',
-        }
+        model = User  # Используем полученную модель пользователя
+        fields = ('username', 'email', 'password1', 'password2')
     
-    # Добавляем валидацию, чтобы убедиться, что пароли совпадают
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают.')
-        return cd['password2']
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Этот email уже используется")
+        return email
 
-# Форма для входа в систему
-class LoginForm(forms.Form):
-    username = forms.CharField(label='Имя пользователя')
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label="Email",
+        max_length=254,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Ваш email'
+        })
+    )
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="Новый пароль",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Новый пароль'
+        }),
+    )
+    new_password2 = forms.CharField(
+        label="Подтвердите пароль",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Повторите пароль'
+        }),
+    )
