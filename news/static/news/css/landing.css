@@ -1,20 +1,16 @@
 /* landing.css */
-
-/* Определяем переменные для светлой темы по умолчанию */
 :root {
     --body-bg-color: #ffffff;
     --text-color: #313131;
+    --wave-color: #0d1117;
 }
 
-/* Переопределяем переменные для темной темы */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --body-bg-color: #121212;
-        --text-color: #ffffff;
-    }
+body.dark-theme {
+    --body-bg-color: #0d1117;
+    --text-color: #ffffff;
+    --wave-color: #ffffff;
 }
 
-/* Применяем переменные к элементам */
 html, body {
     height: 100%;
     margin: 0;
@@ -24,7 +20,6 @@ html, body {
     color: var(--text-color);
 }
 
-/* Общая обертка для всего контента */
 .content-wrapper {
     position: relative;
     z-index: 1;
@@ -32,9 +27,7 @@ html, body {
     overflow-y: auto;
 }
 
-/* Основной контейнер контента */
 .landing-container {
-    /* ИСПРАВЛЕНО: Уменьшен верхний отступ для лучшего центрирования */
     padding: 120px 20px 40px 20px;
     text-align: center;
     max-width: 1200px;
@@ -94,10 +87,8 @@ html, body {
     color: var(--body-bg-color);
 }
 
-/* Адаптация для мобильных */
 @media (max-width: 768px) {
     .landing-container {
-        /* ИСПРАВЛЕНО: Улучшены отступы для мобильных */
         padding: 80px 15px 20px 15px;
     }
     

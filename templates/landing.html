@@ -28,4 +28,11 @@
 
 {% block extra_scripts %}
     <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Принудительно обновляем тему при загрузке
+        const themeEvent = new Event('themeChanged');
+        document.dispatchEvent(themeEvent);
+    });
+    </script>
 {% endblock %}
