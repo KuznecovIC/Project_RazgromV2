@@ -31,17 +31,24 @@
     opacity: 0.8;
     bottom: -120px;
     height: 180px;
-    background: rgba(255, 255, 255, 0.05);
 }
 
+/* Анимация движения волн */
 @keyframes wave-motion {
-    0% {
-        transform: translateX(-50%) rotate(3deg);
-    }
-    50% {
-        transform: translateX(0%) rotate(3deg);
-    }
-    100% {
-        transform: translateX(-50%) rotate(3deg);
-    }
+    0% { transform: translateX(0) rotate(3deg); }
+    100% { transform: translateX(-100%) rotate(3deg); }
+}
+
+@keyframes wave-motion-2 {
+    0% { transform: translateX(0) rotate(-5deg); }
+    100% { transform: translateX(-100%) rotate(-5deg); }
+}
+
+/* Стили для фона в светлой теме */
+body:not(.dark-theme) .landing-background {
+    background: #ffffff; /* Светлый фон */
+}
+
+body:not(.dark-theme) .wave {
+    background: rgba(0, 0, 0, 0.1); /* Полупрозрачный темный цвет волны */
 }

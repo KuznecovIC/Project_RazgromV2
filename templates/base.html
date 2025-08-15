@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'news/css/gooey_nav.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/messages.css' %}">
     {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body class="{% if request.COOKIES.theme == 'dark' %}dark-theme{% endif %}">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0;">
@@ -21,48 +22,67 @@
     </svg>
 
     <header>
-        <nav>
-            <div class="gooey-nav-container">
-                <ul class="gooey-nav">
-                    <li><a href="{% url 'landing' %}">Главная</a></li>
-                    <li><a href="#">О нас</a></li>
-                    <li><a href="#">Контакты</a></li>
-                </ul>
+        <div class="header-content">
+            <div class="user-profile-container">
+                {% if user.is_authenticated %}
+                <div class="user-profile-btn">
+                    {% if user.profile.avatar %}
+                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="user-avatar">
+                    {% else %}
+                        <i class="fas fa-user-circle"></i>
+                    {% endif %}
+                    <span>{{ user.username }}</span>
+                </div>
+                {% endif %}
             </div>
-        </nav>
-        
-        <div class="header-right-side">
-            {% if not user.is_authenticated %}
-                <div class="gooey-nav-container">
-                    <ul class="gooey-nav">
-                        <li><a href="{% url 'login' %}">Войти</a></li>
-                        <li><a href="{% url 'register' %}">Регистрация</a></li>
-                    </ul>
-                </div>
-            {% else %}
-                <div class="gooey-nav-container">
-                    <ul class="gooey-nav">
-                        <li><a href="{% url 'logout' %}">Выйти</a></li>
-                    </ul>
-                </div>
-            {% endif %}
 
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch">
-                    <span class="animation-element cloud"></span>
-                    <span class="animation-element cloud"></span>
-                    <span class="animation-element cloud"></span>
-                    <span class="animation-element cloud"></span>
-                    <span class="animation-element star"></span>
-                    <span class="animation-element star"></span>
-                    <span class="animation-element star"></span>
-                    <span class="animation-element star"></span>
-                </label>
+            <nav>
+                <div class="gooey-nav-container">
+                    <ul class="gooey-nav">
+                        <li><a href="{% url 'landing' %}">Главная</a></li>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <div class="header-right-side">
+                {% if not user.is_authenticated %}
+                    <div class="gooey-nav-container">
+                        <ul class="gooey-nav">
+                            <li><a href="{% url 'login' %}">Войти</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="gooey-nav-container">
+                        <ul class="gooey-nav">
+                            <li><a href="{% url 'logout' %}">Выйти</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-checkbox" class="visually-hidden">
+                        <span class="slider round">
+                            <span class="celestial-body"></span>
+                            <div class="clouds-container">
+                                <span class="cloud cloud-1"></span>
+                                <span class="cloud cloud-2"></span>
+                                <span class="cloud cloud-3"></span>
+                                <span class="cloud cloud-4"></span>
+                            </div>
+                            <span class="star star-1"></span>
+                            <span class="star star-2"></span>
+                            <span class="star star-3"></span>
+                            <span class="star star-4"></span>
+                        </span>
+                    </label>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Контейнер для сообщений -->
     <div class="gooey-messages-container">
         {% if messages %}
         <div class="gooey-messages">
@@ -83,7 +103,20 @@
     </main>
 
     <footer class="footer-container">
+      <div class="github-card-container">
+        <div class="github-card">
+          <a href="https://github.com/KuznecovIC/Project_RazgromV2" target="_blank" class="github-link">
+            <i class="fab fa-github"></i>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-center">
         <p>&copy; 2024 Мой Новостной Ресурс. Все права защищены.</p>
+      </div>
+
+      <div class="footer-right"></div>
     </footer>
 
     {% block extra_scripts %}{% endblock %}

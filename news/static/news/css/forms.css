@@ -29,131 +29,45 @@
 }
 
 /* Стилизация "стеклянной" карточки для регистрации (register) */
-.glass-card-register {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    text-align: center;
-    transform: translateY(-50px); /* Поднимаем карточку регистрации еще выше */
+.register-glass-card {
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
-/* Стилизация элементов формы внутри карточки */
-.glass-card h2, .glass-card-register h2 {
-    font-size: 2.5rem;
+.glass-card h2 {
+    font-size: 2rem;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-.glass-card form, .glass-card-register form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.glass-card form label, .glass-card-register form label {
+.form-field {
+    margin-bottom: 20px;
     text-align: left;
-    font-weight: bold;
-    font-size: 0.9rem;
 }
 
-.glass-card form input, .glass-card-register form input {
-    width: 100%;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.glass-card form input::placeholder, .glass-card-register form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.glass-card form input:focus, .glass-card-register form input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    outline: none;
-}
-
-.glass-card form button, .glass-card-register form button {
-    padding: 12px;
-    background: #61b3dc;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease, transform 0.2s ease;
-    margin-top: 10px;
-}
-
-.glass-card form button:hover, .glass-card-register form button:hover {
-    background: #4a90e2;
-    transform: translateY(-2px);
-}
-
-/* Стилизация ссылок */
-.glass-card p a, .glass-card-register p a {
-    color: #61dca3;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.glass-card p a:hover, .glass-card-register p a:hover {
-    color: #fff;
-    text-decoration: underline;
-}
-
-.glass-card-register {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
+.form-label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .form-input {
     width: 100%;
-    padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 8px;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 1rem;
     transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
 .form-input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.3);
     outline: none;
     box-shadow: 0 0 0 2px rgba(97, 179, 220, 0.3);
 }
@@ -199,39 +113,15 @@
     text-decoration: underline;
 }
 
-.error-message {
-    color: #ff6b6b;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Стили для ошибок */
+/* Стили для ошибок формы */
 .form-errors {
-    background: rgba(255, 107, 107, 0.2);
-    border-left: 3px solid #ff6b6b;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+    margin-top: 10px;
+    text-align: left;
 }
 
-.error-message {
-    color: #ff6b6b;
-    margin: 5px 0;
+.form-errors li {
+    color: #bd10e0;
     font-size: 0.9rem;
-}
-
-.field-errors {
-    color: #ff6b6b;
-    font-size: 0.85rem;
-    margin-top: 5px;
-}
-
-/* Подсветка невалидных полей */
-input:invalid {
-    border-color: #ff6b6b !important;
-}
-
-input:focus:invalid {
-    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3) !important;
+    list-style-type: none;
+    margin-bottom: 5px;
 }

@@ -1,4 +1,3 @@
-/* gooey_nav.css */
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700");
 
 :root {
@@ -18,6 +17,7 @@ body {
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
+/* Header and navigation */
 header {
   position: fixed;
   top: 0;
@@ -26,7 +26,7 @@ header {
   padding: 20px 0;
   z-index: 10;
   display: flex;
-  justify-content: center; /* Центрируем основную навигацию */
+  justify-content: center;
   align-items: center;
   gap: 20px;
   background: rgba(247, 247, 247, 0.92);
@@ -34,14 +34,60 @@ header {
   transition: all 0.5s ease;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.user-profile-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 10;
+}
+
+nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .header-right-side {
-    position: absolute;
-    right: 30px; /* Отступ справа */
-    top: 50%; /* Смещаем на 50% вниз */
-    transform: translateY(-50%); /* Корректируем вертикальное выравнивание */
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+}
+
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  border: 2px solid #4a90e2;
+  color: #313131;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-profile-btn i {
+  font-size: 1.2em;
+}
+
+.user-profile-btn:hover {
+  background: rgba(74, 144, 226, 0.2);
+  transform: translateY(-2px);
 }
 
 .gooey-nav-container {
@@ -64,6 +110,11 @@ header {
   height: 100%;
 }
 
+.gooey-nav li {
+  margin: 0 10px;
+  white-space: nowrap;
+}
+
 .gooey-nav a {
   display: flex;
   align-items: center;
@@ -75,6 +126,11 @@ header {
   position: relative;
   z-index: 2;
   transition: color 0.4s ease;
+  border-radius: 5px;
+}
+
+.gooey-nav a:hover {
+  background-color: rgba(74, 144, 226, 0.1);
 }
 
 .gooey-nav a.active {
@@ -123,7 +179,419 @@ header {
   }
 }
 
-/* Dark theme styles */
+/* Auth container */
+.auth-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #313131;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-container .auth-button {
+  padding: 10px 15px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.auth-container .auth-button:hover {
+  background-color: #3a7bc8;
+}
+
+/* Footer styles */
+.footer-container {
+  padding: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(247, 247, 247, 0.92);
+  backdrop-filter: blur(8px);
+  transition: all 0.5s ease;
+  z-index: 9;
+  
+  /* Важное изменение: управление расположением */
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Центрирует элементы по вертикали */
+}
+
+.footer-container p {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #313131;
+  transition: color 0.5s ease;
+  text-align: center;
+}
+
+/* Новые стили для центрирования */
+.footer-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Стили для ссылки "Регистрация" в футере */
+.footer-register-link {
+  font-size: 0.9em;
+  color: var(--color-1);
+  text-decoration: none;
+  margin-top: 5px;
+  transition: color 0.3s ease;
+}
+
+.footer-register-link:hover {
+  text-decoration: underline;
+  color: var(--color-2);
+}
+
+/* Gooey messages */
+.gooey-messages-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 1000;
+  filter: url('#gooey');
+}
+
+.gooey-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.gooey-message {
+  position: relative;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 250px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transform: translateX(120%);
+  animation: slideIn 0.5s forwards;
+  z-index: 2;
+}
+
+.gooey-message::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  z-index: -1;
+}
+
+.gooey-success {
+  background-color: rgba(74, 144, 226, 0.9);
+}
+
+.gooey-error {
+  background-color: rgba(189, 16, 224, 0.9);
+}
+
+.gooey-warning {
+  background-color: rgba(245, 166, 35, 0.9);
+}
+
+.gooey-info {
+  background-color: rgba(80, 227, 194, 0.9);
+}
+
+.gooey-message-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 15px;
+  padding: 0;
+  line-height: 1;
+}
+
+.gooey-message-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gooey-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.7;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.gooey-nav a:focus-visible,
+.theme-switch:focus-visible {
+  outline: 2px solid var(--color-1);
+  outline-offset: 2px;
+}
+
+/* --- Theme switch styles --- */
+.theme-switch-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 35px;
+  margin-left: 15px;
+  overflow: hidden;
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(160deg, #87ceeb 0%, #e0f7fa 70%, #b3e5fc 100%);
+  transition: background .4s;
+  border-radius: 34px;
+}
+
+/* Dark theme background for slider */
+.theme-switch input:checked + .slider {
+  background: linear-gradient(160deg, #00002e 0%, #1a0038 50%, #2d0047 100%);
+}
+
+.celestial-body {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  top: 5px;
+  left: 5px;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  /* The celestial body must have a higher z-index */
+  z-index: 3;
+}
+
+/* Sun styles */
+body:not(.dark-theme) .celestial-body {
+  background: var(--sun-glow);
+  box-shadow: 0 0 15px #ffde00, 
+              0 0 30px rgba(255, 222, 0, 0.5),
+              0 0 45px rgba(255, 222, 0, 0.2),
+              inset 2px -2px 5px rgba(255, 200, 0, 0.8),
+              inset -3px -3px 8px rgba(230, 126, 34, 0.6),
+              inset 4px 4px 10px rgba(255, 222, 0, 0.4);
+  animation: sun-pulse 3s ease-in-out infinite;
+  transform: translateX(0); /* Default position for sun */
+}
+
+/* Moon styles */
+body.dark-theme .celestial-body {
+  background: var(--moon-glow);
+  /* Move moon to the right side */
+  transform: translateX(35px);
+  box-shadow: inset 4px -3px 0 2px rgba(160, 160, 160, 0.8),
+              inset -5px -2px 0 3px rgba(140, 140, 140, 0.7),
+              inset 3px 5px 0 1px rgba(180, 180, 180, 0.6),
+              inset -2px 4px 0 2px rgba(120, 120, 120, 0.7),
+              inset -6px 0 0 5px rgba(0, 0, 0, 0.15),
+              0 0 10px rgba(224, 224, 224, 0.5),
+              0 0 20px rgba(224, 224, 224, 0.3);
+  animation: none; /* Disable sun-pulse for moon */
+}
+
+/* Clouds container */
+.clouds-container {
+  position: absolute;
+  width: 100%; 
+  height: 100%;
+  top: 0;
+  left: 0;
+  /* Clouds should be behind stars and celestial body */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+  transition: opacity 0.8s ease;
+  z-index: 1;
+  animation: move-cloud 15s linear infinite;
+}
+
+/* Clouds positioning */
+.cloud-1 {
+  width: 22px;
+  height: 16px;
+  top: 6px;
+  left: -22px;
+  animation-delay: 1s;
+  border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+}
+
+.cloud-2 {
+  width: 18px;
+  height: 14px;
+  top: 18px;
+  left: -18px;
+  animation-delay: 4s;
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+}
+
+.cloud-3 {
+  width: 20px;
+  height: 15px;
+  top: 12px;
+  left: -20px;
+  animation-delay: 7s;
+  border-radius: 50% 50% 0 0 / 65% 65% 0 0;
+}
+
+.cloud-4 {
+  width: 16px;
+  height: 13px;
+  top: 22px;
+  left: -16px;
+  animation-delay: 10s;
+  border-radius: 50% 50% 0 0 / 75% 75% 0 0;
+}
+
+/* Stars */
+.star {
+  position: absolute;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: opacity 0.8s ease;
+  /* Stars should be behind the celestial body but in front of clouds */
+  z-index: 2;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+/* Stars positioning */
+.star-1 {
+  width: 3px;
+  height: 3px;
+  top: 8px;
+  left: 15px;
+  animation-delay: 0.5s;
+}
+
+.star-2 {
+  width: 2px;
+  height: 2px;
+  top: 15px;
+  left: 30px;
+  animation-delay: 1s;
+}
+
+.star-3 {
+  width: 2.5px;
+  height: 2.5px;
+  top: 22px;
+  left: 45px;
+  animation-delay: 1.5s;
+}
+
+.star-4 {
+  width: 3px;
+  height: 3px;
+  top: 18px;
+  left: 20px;
+  animation-delay: 0.8s;
+}
+
+/* Animations */
+@keyframes move-cloud {
+  0% {
+    transform: translateX(-70px);
+  }
+  100% {
+    transform: translateX(70px);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes sun-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px #ffde00, 0 0 30px rgba(255, 222, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px #ffde00, 0 0 40px rgba(255, 222, 0, 0.7);
+  }
+}
+
+/* Dark theme overrides */
 body.dark-theme {
   background: #1a1a1a;
   color: #f0f0f0;
@@ -132,6 +600,15 @@ body.dark-theme {
 body.dark-theme header {
   background: rgba(26, 26, 26, 0.92);
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .user-profile-btn {
+  color: #f0f0f0;
+  border-color: #50e3c2;
+}
+
+body.dark-theme .user-profile-btn:hover {
+  background: rgba(80, 227, 194, 0.2);
 }
 
 body.dark-theme .gooey-nav a {
@@ -146,242 +623,6 @@ body.dark-theme .active-bg {
   background-color: #f0f0f0;
 }
 
-/* Theme switch - Solar System */
-.theme-switch-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 60px;
-}
-
-.theme-switch {
-  position: relative;
-  width: 70px;
-  height: 35px;
-  border-radius: 20px;
-  cursor: pointer;
-  background: #fff;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-  transition: all 0.6s ease;
-  overflow: hidden;
-  z-index: 10;
-}
-
-/* Day sky background */
-.theme-switch::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-  background: linear-gradient(160deg, #87CEEB 0%, #E0F7FA 70%, #B3E5FC 100%);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1;
-}
-
-/* Celestial body container */
-.theme-switch::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 3;
-}
-
-/* Sun styles (light theme) */
-body:not(.dark-theme) .theme-switch::after {
-  background: var(--sun-glow);
-  box-shadow: 
-    0 0 15px #ffde00,
-    0 0 30px rgba(255, 222, 0, 0.5),
-    0 0 45px rgba(255, 222, 0, 0.2),
-    /* Sun surface details */
-    inset 2px -2px 5px rgba(255, 200, 0, 0.8),
-    inset -3px -3px 8px rgba(230, 126, 34, 0.6),
-    inset 4px 4px 10px rgba(255, 222, 0, 0.4);
-  filter: drop-shadow(0 0 5px rgba(255, 222, 0, 0.7));
-}
-
-/* Moon styles (dark theme) */
-body.dark-theme .theme-switch::after {
-  transform: translateX(35px);
-  background: var(--moon-glow);
-  box-shadow: 
-    /* Moon craters */
-    inset 4px -3px 0 2px rgba(160, 160, 160, 0.8),
-    inset -5px -2px 0 3px rgba(140, 140, 140, 0.7),
-    inset 3px 5px 0 1px rgba(180, 180, 180, 0.6),
-    inset -2px 4px 0 2px rgba(120, 120, 120, 0.7),
-    /* Dark side */
-    inset -6px 0 0 5px rgba(0, 0, 0, 0.15),
-    /* Glow */
-    0 0 10px rgba(224, 224, 224, 0.5),
-    0 0 20px rgba(224, 224, 224, 0.3);
-}
-
-/* Clouds */
-.theme-switch .cloud {
-  position: absolute;
-  background: #fff;
-  border-radius: 50%;
-  z-index: 2;
-  animation: move-cloud 20s linear infinite;
-  opacity: 1;
-  filter: drop-shadow(0 0 3px rgba(255,255,255,0.8));
-  transition: opacity 0.8s ease;
-}
-
-.theme-switch .cloud:nth-child(1) { 
-  width: 22px; height: 16px; top: 6px; left: -22px;
-  animation-delay: 1s; 
-  border-radius: 50% 50% 0 0 / 60% 60% 0 0; 
-}
-.theme-switch .cloud:nth-child(2) { 
-  width: 18px; height: 14px; top: 18px; left: -18px;
-  animation-delay: 4s; 
-  border-radius: 50% 50% 0 0 / 70% 70% 0 0; 
-}
-.theme-switch .cloud:nth-child(3) { 
-  width: 20px; height: 15px; top: 12px; left: -20px;
-  animation-delay: 7s; 
-  border-radius: 50% 50% 0 0 / 65% 65% 0 0; 
-}
-.theme-switch .cloud:nth-child(4) { 
-  width: 16px; height: 13px; top: 22px; left: -16px;
-  animation-delay: 10s; 
-  border-radius: 50% 50% 0 0 / 75% 75% 0 0; 
-}
-
-/* Stars */
-.theme-switch .star {
-  position: absolute;
-  background-color: #fff;
-  border-radius: 50%;
-  z-index: 2;
-  animation: twinkle 4s ease-in-out infinite alternate;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-.theme-switch .star:nth-child(5) { 
-  width: 3px; height: 3px; top: 8px; left: 15px; 
-  animation-delay: 0.5s; 
-}
-.theme-switch .star:nth-child(6) { 
-  width: 2px; height: 2px; top: 15px; left: 30px; 
-  animation-delay: 1s; 
-}
-.theme-switch .star:nth-child(7) { 
-  width: 2.5px; height: 2.5px; top: 22px; left: 45px; 
-  animation-delay: 1.5s; 
-}
-.theme-switch .star:nth-child(8) { 
-  width: 3px; height: 3px; top: 18px; left: 20px; 
-  animation-delay: 0.8s; 
-}
-
-/* Animations */
-@keyframes move-cloud {
-  0% { transform: translateX(-70px); }
-  100% { transform: translateX(70px); }
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.6; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-@keyframes sun-pulse {
-  0%, 100% { box-shadow: 0 0 15px #ffde00, 0 0 30px rgba(255, 222, 0, 0.5); }
-  50% { box-shadow: 0 0 20px #ffde00, 0 0 40px rgba(255, 222, 0, 0.7); }
-}
-
-/* Dark theme overrides */
-body.dark-theme .theme-switch {
-  background: #2b2b2b;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
-}
-
-body.dark-theme .theme-switch::before {
-  background: linear-gradient(160deg, #00002e 0%, #1a0038 50%, #2d0047 100%);
-}
-
-body.dark-theme .theme-switch .cloud {
-  opacity: 0;
-}
-
-body.dark-theme .theme-switch .star {
-  opacity: 0.8;
-}
-
-/* Sun animation in light theme */
-body:not(.dark-theme) .theme-switch::after {
-  animation: sun-pulse 3s ease-in-out infinite;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    padding: 15px 0;
-    gap: 15px;
-  }
-  
-  .gooey-nav a {
-    font-size: 1em;
-    padding: 0.5em 0.9em;
-  }
-  
-  .theme-switch {
-    width: 60px;
-    height: 30px;
-  }
-  
-  .theme-switch::after {
-    width: 22px;
-    height: 22px;
-  }
-  
-  .cloud, .star {
-    transform: scale(0.8);
-  }
-}
-
-/* Accessibility focus styles */
-.gooey-nav a:focus-visible,
-.theme-switch:focus-visible {
-  outline: 2px solid var(--color-1);
-  outline-offset: 2px;
-}
-
-/* Footer styles */
-.footer-container {
-  padding: 20px;
-  text-align: center;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(247, 247, 247, 0.92);
-  backdrop-filter: blur(8px);
-  transition: all 0.5s ease;
-  z-index: 9;
-}
-
-.footer-container p {
-  margin: 0;
-  font-size: 0.9em;
-  font-weight: 500;
-  color: #313131;
-  transition: color 0.5s ease;
-}
-
-/* Dark theme footer styles */
 body.dark-theme .footer-container {
   background: rgba(26, 26, 26, 0.92);
   box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.3);
@@ -391,145 +632,221 @@ body.dark-theme .footer-container p {
   color: #f0f0f0;
 }
 
-.auth-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.auth-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #313131;
-}
-
-.auth-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.auth-container .auth-button {
-    padding: 10px 15px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-.auth-container .auth-button:hover {
-    background-color: #3a7bc8;
-}
-
 body.dark-theme .auth-container {
-    background: rgba(40, 40, 40, 0.9);
-    color: #f0f0f0;
+  background: rgba(40, 40, 40, 0.9);
+  color: #f0f0f0;
 }
 
 body.dark-theme .auth-container h2 {
-    color: #f0f0f0;
+  color: #f0f0f0;
 }
 
 body.dark-theme .auth-container input {
-    background-color: #333;
-    color: #f0f0f0;
-    border-color: #555;
+  background-color: #333;
+  color: #f0f0f0;
+  border-color: #555;
 }
 
-.gooey-messages-container {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 1000;
-    filter: url('#gooey');
-}
-
-.gooey-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.gooey-message {
-    position: relative;
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 250px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transform: translateX(120%);
-    animation: slideIn 0.5s forwards;
-    z-index: 2;
-}
-
-.gooey-message::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 8px;
-    z-index: -1;
-}
-
-.gooey-success {
-    background-color: rgba(74, 144, 226, 0.9);
-}
-.gooey-error {
-    background-color: rgba(189, 16, 224, 0.9);
-}
-.gooey-warning {
-    background-color: rgba(245, 166, 35, 0.9);
-}
-.gooey-info {
-    background-color: rgba(80, 227, 194, 0.9);
-}
-
-.gooey-message-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    margin-left: 15px;
-    padding: 0;
-    line-height: 1;
-}
-
-.gooey-message-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.gooey-particle {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: currentColor;
-    opacity: 0.7;
-}
-
-@keyframes slideIn {
-    to { transform: translateX(0); }
-}
-
-/* Темная тема */
 body.dark-theme .gooey-message {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Theme-dependent animations and visibility */
+body.dark-theme .cloud {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+body:not(.dark-theme) .cloud {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+body.dark-theme .star {
+  opacity: 0.8;
+  animation-play-state: running;
+}
+
+body:not(.dark-theme) .star {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 15px 0;
+    gap: 15px;
+  }
+
+  .gooey-nav a {
+    font-size: 1em;
+    padding: 0.5em 0.9em;
+  }
+
+  .theme-switch-wrapper {
+    width: 60px;
+    height: 30px;
+  }
+  
+  .celestial-body {
+    width: 22px;
+    height: 22px;
+  }
+
+  body.dark-theme .celestial-body {
+    transform: translateX(28px);
+  }
+
+  .cloud, .star {
+    transform: scale(0.8);
+  }
+
+  .header-content {
+    flex-direction: column;
+  }
+
+  .user-profile-container,
+  nav,
+  .header-right-side {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .header-right-side {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-top: 15px;
+  }
+}
+
+/* GitHub карточка - справа, но с отступом от края */
+.github-card-container {
+  margin-left: auto; /* Автоматический отступ слева - прижимает вправо */
+  margin-right: 20px; /* Отступ от правого края - сдвигает карточку левее */
+  width: 100px; /* Ширина карточки */
+  height: 35px; /* Высота карточки */
+  border-radius: 12px; /* Закругленные углы */
+  z-index: 10; /* Уровень слоя */
+  overflow: hidden; /* Скрываем содержимое за границами */
+  backdrop-filter: blur(5px); /* Размытие фона */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Полупрозрачная граница */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* Для позиционирования внутренних элементов */
+  transition: all 0.3s ease; /* Плавные анимации */
+}
+
+/* Стилизация внутреннего содержимого карточки */
+.github-card {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(74, 144, 226, 0.2) 0%,
+    transparent 50%
+  );
+  transition: background 0.5s ease;
+}
+.github-card-container:hover .github-card {
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+              rgba(74, 144, 226, 0.2) 0%,
+              rgba(74, 144, 226, 0.1) 40%,
+              transparent 100%);
+}
+
+/* Ссылка внутри карточки */
+.github-link {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.8rem; /* Уменьшаем вертикальный padding */
+  color: #313131; /* Цвет текста */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85em; /* Чуть уменьшаем размер шрифта */
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center; /* Вертикальное центрирование */
+  gap: 8px;
+  z-index: 10;
+  position: relative;
+  
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  
+  /* Выравнивание текста и иконки по вертикали */
+  line-height: 1; /* Убираем лишнее пространство вокруг текста */
+  padding-top: 2px; /* Корректировка вертикального положения */
+}
+
+
+/* Иконка GitHub */
+.github-link i {
+  font-size: 1.1em; /* Чуть уменьшаем размер иконки */
+  transition: transform 0.3s ease;
+  position: relative;
+  top: -1px; /* Сдвигаем иконку чуть выше */
+  right: 10px;
+}
+
+/* Текст "GitHub" */
+.github-link span {
+  position: relative;
+  top: -1px; /* Сдвигаем текст чуть выше */
+  right: 15px;
+}
+
+.github-link:hover i {
+  transform: scale(1.1);
+}
+
+/* Центрирование текста в подвале */
+.footer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: 100%; /* Занимает всю доступную ширину */
+  max-width: 600px; /* Максимальная ширина текста */
+  padding: 0 20px; /* Отступы по бокам */
+}
+
+/* Убираем лишний пустой блок */
+.footer-right {
+  display: none;
+}
+
+.footer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* Стили для тёмной темы */
+body.dark-theme .github-card-container {
+  border-color: rgba(80, 227, 194, 0.2);
+}
+
+body.dark-theme .github-card {
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+              rgba(80, 227, 194, 0.2) 0%,
+              transparent 50%);
+}
+
+body.dark-theme .github-card-container:hover .github-card {
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+              rgba(80, 227, 194, 0.2) 0%,
+              rgba(80, 227, 194, 0.1) 40%,
+              transparent 100%);
+}
+
+body.dark-theme .github-link {
+  color: #e0e0e0;
 }

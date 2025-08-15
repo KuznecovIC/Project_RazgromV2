@@ -76,38 +76,12 @@ html, body {
     background: #4a90e2;
 }
 
-.auth-buttons .btn-outline-light {
+.auth-buttons .btn-secondary {
     background: transparent;
     color: var(--text-color);
     border: 2px solid var(--text-color);
 }
 
-.auth-buttons .btn-outline-light:hover {
-    background: var(--text-color);
-    color: var(--body-bg-color);
-}
-
-@media (max-width: 768px) {
-    .landing-container {
-        padding: 80px 15px 20px 15px;
-    }
-    
-    .landing-container h1 {
-        font-size: 2rem;
-    }
-    
-    .landing-container p {
-        font-size: 1.2rem;
-    }
-    
-    .auth-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .auth-buttons .btn {
-        width: 100%;
-        margin: 5px 0;
-    }
+.auth-buttons .btn-secondary:hover {
+    background: rgba(0,0,0,0.1);
 }

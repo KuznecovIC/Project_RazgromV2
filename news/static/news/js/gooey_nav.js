@@ -5,174 +5,289 @@ class GooeyNav {
     }
 
     init() {
-        // Инициализация темы
-        this.initTheme();
-
-        // Инициализация навигации
-        document.querySelectorAll('.gooey-nav-container').forEach(container => {
-            this.setupNavContainer(container);
-        });
+        try {
+            this.initTheme();
+            this.initNavContainers();
+            this.setupThemeSwitch();
+            this.setupGithubCardHoverEffect(); // Добавляем вызов новой функции для GitHub-карточки
+        } catch (error) {
+            console.error('GooeyNav initialization error:', error);
+        }
     }
 
     initTheme() {
-        // Проверяем сохраненную тему
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-        }
-
-        // Обработчик переключения темы
-        const themeSwitch = document.querySelector('.theme-switch');
-        if (themeSwitch) {
-            themeSwitch.addEventListener('click', () => {
-                document.body.classList.toggle('dark-theme');
-                const isDark = document.body.classList.contains('dark-theme');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                
-                // Отправляем событие об изменении темы
-                document.dispatchEvent(new CustomEvent('themeChanged'));
-                
-                // Обновляем все навигационные контейнеры
-                this.updateAllNavs();
-            });
+        try {
+            const savedTheme = localStorage.getItem('theme');
+            const checkbox = document.getElementById('theme-checkbox');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            } else {
+                document.body.classList.remove('dark-theme');
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+            }
+        } catch (error) {
+            console.error('Theme initialization error:', error);
         }
     }
 
-    setupNavContainer(container) {
-        const nav = {
-            container,
-            activeBg: null,
-            particleContainer: null,
-            currentActiveLink: null
-        };
+    setupThemeSwitch() {
+        try {
+            const checkbox = document.getElementById('theme-checkbox');
+            if (!checkbox) return;
 
-        // Создаем фон для активной кнопки
-        nav.activeBg = document.createElement('div');
-        nav.activeBg.className = 'active-bg';
-        container.appendChild(nav.activeBg);
+            checkbox.addEventListener('change', (e) => {
+                const isDark = e.target.checked;
+                document.body.classList.toggle('dark-theme', isDark);
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                document.dispatchEvent(new CustomEvent('themeChanged'));
 
-        // Создаем контейнер для частиц
-        nav.particleContainer = document.createElement('div');
-        nav.particleContainer.className = 'particle-container';
-        container.appendChild(nav.particleContainer);
+                this.updateAllNavs();
+            });
+        } catch (error) {
+            console.error('Theme switch setup error:', error);
+        }
+    }
 
-        // Инициализируем ссылки
-        this.setupNavLinks(nav);
-        this.navContainers.push(nav);
+    initNavContainers() {
+        try {
+            const containers = document.querySelectorAll('.gooey-nav-container');
+            if (!containers.length) {
+                console.warn('No gooey-nav-container elements found');
+                return;
+            }
+
+            containers.forEach(container => {
+                try {
+                    const nav = {
+                        container,
+                        activeBg: this.createActiveBg(container),
+                        particleContainer: this.createParticleContainer(container),
+                        currentActiveLink: null
+                    };
+                    
+                    this.setupNavLinks(nav);
+                    this.navContainers.push(nav);
+                } catch (error) {
+                    console.error('Error initializing nav container:', error, container);
+                }
+            });
+        } catch (error) {
+            console.error('Nav containers initialization error:', error);
+        }
+    }
+
+    createActiveBg(container) {
+        try {
+            const bg = document.createElement('div');
+            bg.className = 'active-bg';
+            container.appendChild(bg);
+            return bg;
+        } catch (error) {
+            console.error('Error creating active background:', error);
+            return null;
+        }
+    }
+
+    createParticleContainer(container) {
+        try {
+            const particles = document.createElement('div');
+            particles.className = 'particle-container';
+            container.appendChild(particles);
+            return particles;
+        } catch (error) {
+            console.error('Error creating particle container:', error);
+            return null;
+        }
     }
 
     setupNavLinks(nav) {
-        const links = nav.container.querySelectorAll('.gooey-nav a');
-        
-        // Находим активную ссылку по текущему URL
-        const currentPath = window.location.pathname;
-        links.forEach(link => {
-            const linkPath = link.getAttribute('href');
-            if (currentPath === linkPath) {
-                link.classList.add('active');
-                nav.currentActiveLink = link;
-                this.updateActiveBg(nav);
+        if (!nav?.container) return;
+
+        try {
+            const links = nav.container.querySelectorAll('.gooey-nav a');
+            if (!links.length) {
+                console.warn('No navigation links found in container:', nav.container);
+                return;
             }
 
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.handleNavClick(e, nav);
-            });
-        });
+            const currentPath = window.location.pathname;
+            
+            links.forEach(link => {
+                try {
+                    if (link.getAttribute('href') === currentPath) {
+                        this.setActiveLink(nav, link);
+                    }
 
-        // Если активная ссылка не найдена, выбираем первую
-        if (!nav.currentActiveLink && links.length > 0) {
-            links[0].classList.add('active');
-            nav.currentActiveLink = links[0];
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleNavClick(e, nav);
+                    });
+                } catch (error) {
+                    console.error('Error setting up nav link:', error, link);
+                }
+            });
+
+            if (!nav.currentActiveLink && links.length > 0) {
+                this.setActiveLink(nav, links[0]);
+            }
+        } catch (error) {
+            console.error('Error setting up nav links:', error);
+        }
+    }
+
+    setActiveLink(nav, link) {
+        if (!nav || !link) return;
+
+        try {
+            if (nav.currentActiveLink) {
+                nav.currentActiveLink.classList.remove('active');
+            }
+            link.classList.add('active');
+            nav.currentActiveLink = link;
             this.updateActiveBg(nav);
+        } catch (error) {
+            console.error('Error setting active link:', error);
         }
     }
 
     handleNavClick(event, nav) {
-        const link = event.currentTarget;
-        const href = link.href;
-        
-        // Убираем активный класс у всех ссылок
-        nav.container.querySelectorAll('.gooey-nav a').forEach(l => {
-            l.classList.remove('active');
-        });
-        
-        // Устанавливаем активный класс для текущей ссылки
-        link.classList.add('active');
-        nav.currentActiveLink = link;
-        
-        // Обновляем фон и создаем частицы
-        this.updateActiveBg(nav);
-        this.createParticles(link, nav.particleContainer);
+        if (!event || !nav) return;
 
-        // Переходим по ссылке с задержкой
-        setTimeout(() => {
-            window.location.href = href;
-        }, 500);
+        try {
+            const link = event.currentTarget;
+            if (!link) return;
+
+            this.setActiveLink(nav, link);
+            this.createParticles(link, nav.particleContainer);
+
+            setTimeout(() => {
+                try {
+                    if (link.href) {
+                        window.location.href = link.href;
+                    }
+                } catch (error) {
+                    console.error('Navigation error:', error);
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Error handling nav click:', error);
+        }
     }
 
     updateActiveBg(nav) {
-        if (!nav.currentActiveLink) return;
-        
-        const linkRect = nav.currentActiveLink.getBoundingClientRect();
-        const containerRect = nav.container.getBoundingClientRect();
-        
-        nav.activeBg.style.left = `${linkRect.left - containerRect.left}px`;
-        nav.activeBg.style.width = `${linkRect.width}px`;
-        
-        // Устанавливаем цвет в зависимости от темы
-        const isDark = document.body.classList.contains('dark-theme');
-        nav.activeBg.style.backgroundColor = isDark ? '#f0f0f0' : '#313131';
-        
-        // Обновляем цвета ссылок
-        nav.container.querySelectorAll('.gooey-nav a').forEach(l => {
-            l.style.color = isDark ? '#e0e0e0' : '#313131';
-        });
-        nav.currentActiveLink.style.color = isDark ? '#1a1a1a' : '#fff';
+        if (!nav?.currentActiveLink || !nav.activeBg) return;
+
+        try {
+            const linkRect = nav.currentActiveLink.getBoundingClientRect();
+            const containerRect = nav.container.getBoundingClientRect();
+            
+            nav.activeBg.style.left = `${linkRect.left - containerRect.left}px`;
+            nav.activeBg.style.width = `${linkRect.width}px`;
+            
+            const isDark = document.body.classList.contains('dark-theme');
+            nav.activeBg.style.backgroundColor = isDark ? '#f0f0f0' : '#313131';
+            
+            nav.container.querySelectorAll('.gooey-nav a').forEach(l => {
+                l.style.color = isDark ? '#e0e0e0' : '#313131';
+            });
+            nav.currentActiveLink.style.color = isDark ? '#1a1a1a' : '#fff';
+        } catch (error) {
+            console.error('Error updating active background:', error);
+        }
     }
 
     createParticles(target, container) {
-        const particleCount = 15;
-        const targetRect = target.getBoundingClientRect();
-        const centerX = targetRect.left + targetRect.width / 2;
-        const centerY = targetRect.top + targetRect.height / 2;
-        const colors = ['#4a90e2', '#bd10e0', '#f5a623', '#50e3c2'];
+        if (!target || !container) return;
 
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
+        try {
+            const particleCount = 15;
+            const targetRect = target.getBoundingClientRect();
+            const centerX = targetRect.left + targetRect.width / 2;
+            const centerY = targetRect.top + targetRect.height / 2;
+            const colors = ['#4a90e2', '#bd10e0', '#f5a623', '#50e3c2'];
 
-            const startAngle = Math.random() * 2 * Math.PI;
-            const startRadius = 50 + Math.random() * 40;
-            const startX = centerX + Math.cos(startAngle) * startRadius;
-            const startY = centerY + Math.sin(startAngle) * startRadius;
+            for (let i = 0; i < particleCount; i++) {
+                try {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
 
-            const animationTime = 600 + Math.random() * 300;
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.setProperty('--time', `${animationTime}ms`);
-            
-            const containerRect = container.getBoundingClientRect();
-            particle.style.setProperty('--start-x', `${startX - containerRect.left}px`);
-            particle.style.setProperty('--start-y', `${startY - containerRect.top}px`);
-            particle.style.setProperty('--end-x', `${centerX - containerRect.left}px`);
-            particle.style.setProperty('--end-y', `${centerY - containerRect.top}px`);
-            
-            container.appendChild(particle);
-            
-            setTimeout(() => {
-                particle.remove();
-            }, animationTime);
+                    const angle = Math.random() * 2 * Math.PI;
+                    const radius = 50 + Math.random() * 40;
+                    const startX = centerX + Math.cos(angle) * radius;
+                    const startY = centerY + Math.sin(angle) * radius;
+                    const time = 600 + Math.random() * 300;
+
+                    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.setProperty('--time', `${time}ms`);
+                    
+                    const containerRect = container.getBoundingClientRect();
+                    particle.style.setProperty('--start-x', `${startX - containerRect.left}px`);
+                    particle.style.setProperty('--start-y', `${startY - containerRect.top}px`);
+                    particle.style.setProperty('--end-x', `${centerX - containerRect.left}px`);
+                    particle.style.setProperty('--end-y', `${centerY - containerRect.top}px`);
+                    
+                    container.appendChild(particle);
+                    setTimeout(() => {
+                        try {
+                            if (particle.parentNode === container) {
+                                container.removeChild(particle);
+                            }
+                        } catch (error) {
+                            console.error('Error removing particle:', error);
+                        }
+                    }, time);
+                } catch (error) {
+                    console.error('Error creating particle:', error);
+                }
+            }
+        } catch (error) {
+            console.error('Error creating particles:', error);
         }
     }
 
     updateAllNavs() {
-        this.navContainers.forEach(nav => {
-            this.updateActiveBg(nav);
+        try {
+            this.navContainers.forEach(nav => {
+                try {
+                    this.updateActiveBg(nav);
+                } catch (error) {
+                    console.error('Error updating nav:', error, nav);
+                }
+            });
+        } catch (error) {
+            console.error('Error updating all navs:', error);
+        }
+    }
+
+    setupGithubCardHoverEffect() {
+        const cardContainer = document.querySelector('.github-card-container');
+        if (!cardContainer) return;
+
+        const card = cardContainer.querySelector('.github-card');
+        if (!card) return;
+
+        cardContainer.addEventListener('mousemove', (e) => {
+            const rect = cardContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--x', `${x}px`);
+            card.style.setProperty('--y', `${y}px`);
         });
     }
 }
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    window.gooeyNav = new GooeyNav();
+    try {
+        window.gooeyNav = new GooeyNav();
+    } catch (error) {
+        console.error('Failed to initialize GooeyNav:', error);
+    }
 });
