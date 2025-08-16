@@ -2,6 +2,33 @@ from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from . import views
 from .forms import CustomPasswordResetForm, CustomSetPasswordForm
+from .views import test_middleware, debug_view
+from django.template import Template, Context
+from django.http import HttpResponse
+from django.urls import path
+from .views import (
+    landing_page, 
+    register_user, 
+    login_user, 
+    logout_user,
+    test_middleware,
+    debug_view  # Убедитесь, что это добавлено
+)
+
+def middleware_test(request):
+    t = Template("""
+    <html><body>
+        <h1>Middleware Test Page</h1>
+        <p>News count: {{ base_news|length }}</p>
+        {% for item in base_news %}
+        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+        </div>
+        {% endfor %}
+    </body></html>
+    """)
+    return HttpResponse(t.render(Context({})))
 
 urlpatterns = [
     # Основные URL приложения
@@ -9,7 +36,9 @@ urlpatterns = [
     path('register/', views.register_user, name='register'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
-    
+    path('test-middleware/', views.test_middleware, name='test_middleware'),
+    path('debug-test/', debug_view),
+
     # URL для сброса пароля
     path('password_reset/', 
          auth_views.PasswordResetView.as_view(

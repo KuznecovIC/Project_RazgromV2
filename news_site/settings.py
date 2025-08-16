@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'news.middleware.BaseNewsMiddleware',  # Должен быть ПОСЛЕДНИМ
 ]
 
 ROOT_URLCONF = 'news_site.urls'
@@ -148,3 +149,5 @@ if DEBUG:
 
 AUTH_USER_MODEL = 'news.User'
 LOGIN_URL = 'login'
+
+DEBUG = True

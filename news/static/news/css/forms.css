@@ -12,7 +12,7 @@
     z-index: 10;
 }
 
-/* Стилизация "стеклянной" карточки для входа (login) */
+/* Стилизация "стеклянной" карточки для входа и регистрации */
 .glass-card {
     width: 100%;
     max-width: 450px;
@@ -25,15 +25,17 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
     text-align: center;
-    transform: translateY(-20px); /* Поднимаем карточку входа немного выше */
+    transform: translateY(-20px); /* Поднимаем карточку немного выше */
 }
 
 /* Стилизация "стеклянной" карточки для регистрации (register) */
+/* Этот класс может использоваться для дополнительных стилей, если необходимо */
 .register-glass-card {
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
+/* Заголовок формы */
 .glass-card h2 {
     font-size: 2rem;
     margin-bottom: 20px;
@@ -41,11 +43,13 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
+/* Контейнер для каждого поля формы */
 .form-field {
     margin-bottom: 20px;
     text-align: left;
 }
 
+/* Стилизация метки поля */
 .form-label {
     display: block;
     font-size: 0.9rem;
@@ -54,6 +58,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
+/* Стилизация поля ввода */
 .form-input {
     width: 100%;
     padding: 10px;
@@ -77,6 +82,7 @@
     opacity: 1;
 }
 
+/* Кнопка отправки формы */
 .submit-btn {
     width: 100%;
     padding: 12px;
@@ -96,6 +102,7 @@
     transform: translateY(-2px);
 }
 
+/* Ссылки авторизации/регистрации */
 .auth-link {
     margin-top: 20px;
     text-align: center;
@@ -119,9 +126,16 @@
     text-align: left;
 }
 
-.form-errors li {
+.form-errors li, .error-message {
     color: #bd10e0;
     font-size: 0.9rem;
     list-style-type: none;
     margin-bottom: 5px;
+}
+
+/* Стили для ошибок полей (field-errors) */
+.field-errors {
+    color: #bd10e0;
+    font-size: 0.9rem;
+    margin-top: 5px;
 }

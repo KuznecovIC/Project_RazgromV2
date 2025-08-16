@@ -17,13 +17,44 @@
     <div class="form-card-wrapper">
         <div class="glass-card">
             <h2>Вход</h2>
-            <form action="" method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Войти</button>
+                
+                {% if form.errors %}
+                    <div class="form-errors">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="form-field">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">Имя пользователя</label>
+                    <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" 
+                           class="form-input" required
+                           placeholder="Введите ваш логин">
+                    {% if form.username.errors %}
+                        <div class="field-errors">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-field">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">Пароль</label>
+                    <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" 
+                           class="form-input" required
+                           placeholder="Введите ваш пароль">
+                    {% if form.password.errors %}
+                        <div class="field-errors">{{ form.password.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="submit-btn">Войти</button>
             </form>
-            <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-            <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+            
+            <p class="auth-link">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+            <p class="auth-link"><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
         </div>
     </div>
 {% endblock %}

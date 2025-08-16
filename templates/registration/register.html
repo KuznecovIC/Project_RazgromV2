@@ -15,7 +15,7 @@
     </div>
     
     <div class="form-card-wrapper">
-        <div class="glass-card-register">
+        <div class="glass-card">
             <h2>Регистрация</h2>
             
             {% if form.errors %}
@@ -31,8 +31,8 @@
             <form method="post" novalidate>
                 {% csrf_token %}
                 
-                <div class="form-group">
-                    <label for="id_username">Имя пользователя</label>
+                <div class="form-field">
+                    <label for="id_username" class="form-label">Имя пользователя</label>
                     <input type="text" name="username" id="id_username" 
                            class="form-input" required
                            placeholder="Придумайте логин"
@@ -42,8 +42,8 @@
                     {% endif %}
                 </div>
                 
-                <div class="form-group">
-                    <label for="id_email">Электронная почта</label>
+                <div class="form-field">
+                    <label for="id_email" class="form-label">Электронная почта</label>
                     <input type="email" name="email" id="id_email" 
                            class="form-input" required
                            placeholder="example@mail.com"
@@ -53,15 +53,15 @@
                     {% endif %}
                 </div>
                 
-                <div class="form-group">
-                    <label for="id_password1">Пароль</label>
+                <div class="form-field">
+                    <label for="id_password1" class="form-label">Пароль</label>
                     <input type="password" name="password1" id="id_password1" 
                            class="form-input" required
                            placeholder="Не менее 8 символов">
                 </div>
                 
-                <div class="form-group">
-                    <label for="id_password2">Подтвердите пароль</label>
+                <div class="form-field">
+                    <label for="id_password2" class="form-label">Подтвердите пароль</label>
                     <input type="password" name="password2" id="id_password2" 
                            class="form-input" required
                            placeholder="Повторите ваш пароль">

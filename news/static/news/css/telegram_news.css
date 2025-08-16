@@ -1,0 +1,95 @@
+/* Общие переменные для цветовой схемы */
+:root {
+    --text-color-light: #333;
+    --text-color-dark: #f0f0f0;
+}
+
+/* Стили для скролла */
+.content-wrapper {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 50px;
+}
+
+/* Стили для карточек новостей */
+.telegram-post-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 20px;
+    width: 800px;
+    max-width: 90%;
+    margin-left: auto; /* Центрируем по умолчанию */
+    margin-right: auto;
+    
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+
+    color: var(--text-color-light); /* Светлая тема: тёмный текст */
+}
+
+/* Цвет текста для тёмной темы */
+body.dark-theme .telegram-post-card {
+    color: var(--text-color-dark);
+}
+
+.telegram-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Чередование расположения карточек */
+.telegram-post-card-right {
+    flex-direction: row-reverse;
+    margin-right: 5%; /* Сдвигаем вправо */
+}
+
+.telegram-post-card-left {
+    flex-direction: row;
+    margin-left: 5%; /* Сдвигаем влево */
+}
+
+/* Карточка по центру (нечетный случай) */
+.telegram-post-card-center {
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Стили для контента и изображений */
+.telegram-post-content {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.telegram-post-image {
+    width: 200px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.telegram-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reporter-icon {
+    font-size: 1.2em;
+    margin-right: 8px;
+    color: #4a90e2;
+}
+
+.telegram-post-header {
+    display: flex;
+    align-items: center;
+}

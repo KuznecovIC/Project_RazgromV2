@@ -2,35 +2,70 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'news/css/landing.css' %}">
-    <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/landing.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/telegram_news.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock %}
 
 {% block title %}Главная страница{% endblock %}
 
 {% block content %}
-    <canvas class="darkveil-canvas"></canvas>
+    <canvas class="darkveil-canvas"></canvas>
 
-    <div class="content-wrapper">
-        <div class="landing-container">
-            <h1>Добро пожаловать на наш новостной ресурс!</h1>
-            <p>Здесь вы найдете самые свежие новости и актуальные события</p>
-            
-            {% if not user.is_authenticated %}
-            <div class="auth-buttons">
-                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
-                <a href="{% url 'register' %}" class="btn btn-outline-light">Зарегистрироваться</a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
+    <div class="content-wrapper">
+        <div class="landing-container">
+            <h1>Добро пожаловать на наш новостной ресурс!</h1>
+            <p>Здесь вы найдете самые свежие новости и актуальные события</p>
+            
+            {% if not user.is_authenticated %}
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-light">Зарегистрироваться</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="telegram-post-grid">
+            {% for news_item in base_news %}
+                <div class="telegram-post-card 
+                    {% if forloop.counter == 1 %}
+                        telegram-post-card-right
+                    {% elif forloop.counter == 2 %}
+                        telegram-post-card-left
+                    {% else %}
+                        telegram-post-card-right
+                    {% endif %}">
+                    <div class="telegram-post-content">
+                        <div class="telegram-post-header">
+                            <i class="fas fa-user-circle reporter-icon"></i>
+                            <span class="telegram-post-reporter">{{ news_item.reporter }}</span>
+                        </div>
+                        <h2 class="telegram-post-title">{{ news_item.title }}</h2>
+                        <p class="telegram-post-text">{{ news_item.text }}</p>
+                        <p class="telegram-post-meta">
+                            <small>
+                                Опубликовано: {{ news_item.created_at|date:"d M Y в H:i" }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="telegram-post-image">
+                        <img src="{% static 'news/images/news' %}{{ forloop.counter }}.jpg" alt="News Image">
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-info" role="alert">
+                    На данный момент новостей нет. Загляните позже!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_scripts %}
-    <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
+    <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Принудительно обновляем тему при загрузке
         const themeEvent = new Event('themeChanged');
         document.dispatchEvent(themeEvent);
     });

@@ -6,7 +6,12 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-
+from django.views.decorators.http import require_GET
+from django.http import HttpResponse
+from django.template import Template, Context
+from django.template.response import TemplateResponse
+import datetime
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -27,12 +32,42 @@ class EmailUserCreationForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError("Этот email уже используется")
         return email
+    
 
 def landing_page(request):
-    # Приветственное сообщение для новых пользователей
     if request.GET.get('new_user') == 'true':
         messages.info(request, 'Добро пожаловать на наш сайт! Пожалуйста, войдите в свой аккаунт.')
-    return render(request, 'landing.html')
+    
+    # Теперь все новости от одного репортёра
+    base_news = [
+        {
+            'reporter': 'Специальный корреспондент',
+            'title': 'Итоги Аляскинского саммита: Шаг к разрядке или новая глава?',
+            'text': 'Саммит на Аляске завершился. Лидеры обсудили вопросы климата, кибербезопасности и торговых отношений. Несмотря на отсутствие прорывных соглашений, эксперты отмечают конструктивный тон переговоров.',
+            'created_at': timezone.now() - datetime.timedelta(hours=6)
+        },
+        {
+            'reporter': 'Специальный корреспондент',
+            'title': 'Саммит на Аляске: Первые заявления после встречи',
+            'text': 'По итогам встречи на Аляске стороны выступили с короткими, но ёмкими заявлениями. Особое внимание уделялось вопросу сотрудничества в Арктике. Подробности ожидаются в течение дня.',
+            'created_at': timezone.now() - datetime.timedelta(hours=4)
+        },
+        {
+            'reporter': 'Специальный корреспондент',
+            'title': 'Аляска: Кулуарные настроения саммита',
+            'text': 'Наш корреспондент, работающий "в полях", сообщает о напряженной, но в то же время деловой атмосфере. За закрытыми дверями обсуждались санкционные вопросы и будущие инвестиции.',
+            'created_at': timezone.now() - datetime.timedelta(hours=2)
+        },
+    ]
+
+    # Сортировка по времени создания (снизу вверх: старые -> новые)
+    sorted_news = sorted(base_news, key=lambda x: x['created_at'])
+
+    context = {
+        'base_news': sorted_news,
+    }
+    
+    return render(request, 'landing.html', context)
 
 def register_user(request):
     if request.method == 'POST':
@@ -93,3 +128,30 @@ def logout_user(request):
         messages.warning(request, 'Вы не были авторизованы.')
     
     return redirect('landing')
+
+def test_middleware(request):
+    """Тестовая страница для проверки middleware"""
+    return TemplateResponse(
+        request,
+        'test_template.html',
+        {'test_value': 'Тестовое значение из view'}
+    )
+
+def debug_view(request):
+    """Простая view для тестирования middleware"""
+    return HttpResponse("""
+    <html>
+    <body>
+        <h1>Тест Middleware</h1>
+        <p>Это обычный HttpResponse для проверки работы middleware</p>
+    </body>
+    </html>
+    """)
+
+
+def force_middleware_test(request):
+    """View, который точно работает с middleware"""
+    response = TemplateResponse(request, 'test_template.html', {})
+    # Явно указываем, что ответ не обработан
+    response._is_rendered = False
+    return response
