@@ -12,6 +12,7 @@ from django.template import Template, Context
 from django.template.response import TemplateResponse
 import datetime
 from django.utils import timezone
+from .models import NewsPost, AboutPage, Reporter, User
 
 User = get_user_model()
 
@@ -35,36 +36,63 @@ class EmailUserCreationForm(UserCreationForm):
     
 
 def landing_page(request):
-    if request.GET.get('new_user') == 'true':
-        messages.info(request, 'Добро пожаловать на наш сайт! Пожалуйста, войдите в свой аккаунт.')
+    """
+    Отображает главную страницу с новостями и информацией "О нас".
+    """
+    # Получаем последнюю страницу "О нас" из базы данных
+    about_page = AboutPage.objects.first()
     
-    # Теперь все новости от одного репортёра
-    base_news = [
-        {
-            'reporter': 'Специальный корреспондент',
-            'title': 'Итоги Аляскинского саммита: Шаг к разрядке или новая глава?',
-            'text': 'Саммит на Аляске завершился. Лидеры обсудили вопросы климата, кибербезопасности и торговых отношений. Несмотря на отсутствие прорывных соглашений, эксперты отмечают конструктивный тон переговоров.',
-            'created_at': timezone.now() - datetime.timedelta(hours=6)
-        },
-        {
-            'reporter': 'Специальный корреспондент',
-            'title': 'Саммит на Аляске: Первые заявления после встречи',
-            'text': 'По итогам встречи на Аляске стороны выступили с короткими, но ёмкими заявлениями. Особое внимание уделялось вопросу сотрудничества в Арктике. Подробности ожидаются в течение дня.',
-            'created_at': timezone.now() - datetime.timedelta(hours=4)
-        },
-        {
-            'reporter': 'Специальный корреспондент',
-            'title': 'Аляска: Кулуарные настроения саммита',
-            'text': 'Наш корреспондент, работающий "в полях", сообщает о напряженной, но в то же время деловой атмосфере. За закрытыми дверями обсуждались санкционные вопросы и будущие инвестиции.',
-            'created_at': timezone.now() - datetime.timedelta(hours=2)
-        },
-    ]
-
-    # Сортировка по времени создания (снизу вверх: старые -> новые)
-    sorted_news = sorted(base_news, key=lambda x: x['created_at'])
-
+    # Получаем 3 самые свежие новости из базы данных
+    news_posts = NewsPost.objects.all().order_by('-created_at')[:3]
+    
+    # Если новости не были созданы, используем жёстко закодированные данные
+    if not news_posts:
+        geo_reporter, _ = Reporter.objects.get_or_create(
+            user__username='geo_reporter',
+            defaults={
+                'user': User.objects.create_user(username='geo_reporter', first_name='Иван', last_name='Петров'),
+                'specialization': 'Геополитика',
+                'bio': 'Опытный международный обозреватель'
+            }
+        )
+        editor_reporter, _ = Reporter.objects.get_or_create(
+            user__username='editor',
+            defaults={
+                'user': User.objects.create_user(username='editor', first_name='Редакция', last_name=''),
+                'specialization': 'Главный редактор'
+            }
+        )
+        spec_reporter, _ = Reporter.objects.get_or_create(
+            user__username='spec_correspondent',
+            defaults={
+                'user': User.objects.create_user(username='spec_correspondent', first_name='Алексей', last_name='Смирнов'),
+                'specialization': 'Специальный корреспондент'
+            }
+        )
+        news_posts = [
+            NewsPost(
+                reporter=geo_reporter,
+                title='Итоги Аляскинского саммита: Шаг к разрядке или новая глава?',
+                text='Саммит на Аляске завершился. Лидеры обсудили вопросы климата, кибербезопасности и торговых отношений.',
+                created_at=timezone.now() - datetime.timedelta(hours=6)
+            ),
+            NewsPost(
+                reporter=editor_reporter,
+                title='Саммит на Аляске: Первые заявления после встречи',
+                text='По итогам встречи на Аляске стороны выступили с короткими, но ёмкими заявлениями.',
+                created_at=timezone.now() - datetime.timedelta(hours=4)
+            ),
+            NewsPost(
+                reporter=spec_reporter,
+                title='Аляска: Кулуарные настроения саммита',
+                text='Наш корреспондент сообщает о напряженной, но в то же время деловой атмосфере.',
+                created_at=timezone.now() - datetime.timedelta(hours=2)
+            ),
+        ]
+    
     context = {
-        'base_news': sorted_news,
+        'about_page': about_page,
+        'base_news': news_posts,
     }
     
     return render(request, 'landing.html', context)

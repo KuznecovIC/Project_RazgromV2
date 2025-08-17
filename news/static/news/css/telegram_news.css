@@ -2,41 +2,212 @@
 :root {
     --text-color-light: #333;
     --text-color-dark: #f0f0f0;
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --background-light: #f0f2f5;
+    --background-dark: #121212;
+    --card-bg-light: rgba(255, 255, 255, 0.9);
+    --card-bg-dark: rgba(30, 30, 30, 0.9);
 }
 
-/* Стили для скролла */
+/* Базовые стили для структуры (Исправлено) */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+    overflow-y: auto; /* Включаем вертикальную прокрутку для всей страницы */
+}
+
+body {
+    background-color: var(--background-light);
+    transition: background-color 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+body.dark-theme {
+    background-color: var(--background-dark);
+}
+
+main {
+    min-height: 100vh; /* Заставляет main занимать всю высоту экрана */
+    display: flex;
+    flex-direction: column;
+}
+
 .content-wrapper {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 50px;
+    flex: 1;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Стили для приветственного блока */
+.landing-container {
+    text-align: center;
+    padding: 80px 20px 40px;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.landing-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+}
+
+.landing-container p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+body.dark-theme .landing-container h1 {
+    color: var(--text-color-dark);
+}
+
+body.dark-theme .landing-container p {
+    color: #ccc;
+}
+
+.auth-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-outline-light {
+    background-color: transparent;
+    color: var(--text-color-light);
+    border: 1px solid var(--text-color-light);
+}
+
+body.dark-theme .btn-outline-light {
+    color: var(--text-color-dark);
+    border-color: var(--text-color-dark);
+}
+
+/* Стили для секции "О нас" */
+.about-section {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 40px;
+    margin: 30px auto;
+    max-width: 1200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: relative;
+    color: var(--text-color-light);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme .about-section {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-color-dark);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.about-title {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+body.dark-theme .about-title {
+    color: var(--text-color-dark);
+}
+
+.about-text {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 120px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    text-transform: capitalize;
+}
+
+body.dark-theme .stat-item {
+    background: rgba(0,0,0,0.3);
+    color: var(--text-color-dark);
+}
+
+body.dark-theme .stat-label {
+    color: #b0b0b0;
+}
+
+/* Стили для сетки новостей */
+.telegram-post-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 0 50px;
 }
 
 /* Стили для карточек новостей */
 .telegram-post-card {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 20px;
     width: 800px;
     max-width: 90%;
-    margin-left: auto; /* Центрируем по умолчанию */
-    margin-right: auto;
-    
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    
+    padding: 20px;
+    background: var(--card-bg-light);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: transform 0.3s, box-shadow 0.3s;
-
-    color: var(--text-color-light); /* Светлая тема: тёмный текст */
+    color: var(--text-color-light);
 }
 
-/* Цвет текста для тёмной темы */
 body.dark-theme .telegram-post-card {
+    background: var(--card-bg-dark);
     color: var(--text-color-dark);
 }
 
@@ -45,28 +216,23 @@ body.dark-theme .telegram-post-card {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Чередование расположения карточек */
+/* Чередование карточек */
 .telegram-post-card-right {
-    flex-direction: row-reverse;
-    margin-right: 5%; /* Сдвигаем вправо */
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 5%;
 }
 
 .telegram-post-card-left {
-    flex-direction: row;
-    margin-left: 5%; /* Сдвигаем влево */
-}
-
-/* Карточка по центру (нечетный случай) */
-.telegram-post-card-center {
-    flex-direction: row;
-    margin-left: auto;
+    flex-direction: row-reverse;
     margin-right: auto;
+    margin-left: 5%;
 }
 
-/* Стили для контента и изображений */
+/* Стили для контента карточек */
 .telegram-post-content {
     flex: 1;
-    padding-right: 20px;
+    padding: 0 20px;
 }
 
 .telegram-post-image {
@@ -75,21 +241,103 @@ body.dark-theme .telegram-post-card {
     border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .telegram-post-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.reporter-icon {
-    font-size: 1.2em;
-    margin-right: 8px;
-    color: #4a90e2;
+.telegram-post-card:hover .telegram-post-image img {
+    transform: scale(1.05);
 }
 
 .telegram-post-header {
     display: flex;
     align-items: center;
+    margin-bottom: 15px;
+}
+
+.reporter-icon {
+    font-size: 1.5em;
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.telegram-post-reporter {
+    font-weight: 500;
+}
+
+.telegram-post-title {
+    font-size: 1.5rem;
+    margin: 0 0 15px 0;
+    line-height: 1.3;
+}
+
+.telegram-post-text {
+    margin: 0 0 15px 0;
+    color: #555;
+    line-height: 1.6;
+}
+
+body.dark-theme .telegram-post-text {
+    color: #ccc;
+}
+
+.telegram-post-meta {
+    color: #666;
+    font-size: 0.9em;
+}
+
+body.dark-theme .telegram-post-meta {
+    color: #aaa;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .telegram-post-card {
+        flex-direction: column;
+        width: 90%;
+    }
+    
+    .telegram-post-card-right,
+    .telegram-post-card-left {
+        flex-direction: column;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .telegram-post-image {
+        width: 100%;
+        height: 200px;
+        margin-top: 15px;
+    }
+    
+    .about-stats {
+        gap: 10px;
+    }
+    
+    .stat-item {
+        min-width: calc(50% - 20px);
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-container h1 {
+        font-size: 2rem;
+    }
+    
+    .about-title {
+        font-size: 1.8rem;
+    }
+    
+    .stat-item {
+        min-width: 100%;
+    }
 }

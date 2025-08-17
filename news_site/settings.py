@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'news.middleware.BaseNewsMiddleware',  # Должен быть ПОСЛЕДНИМ
+    'news.middleware.BaseNewsMiddleware',
 ]
 
 ROOT_URLCONF = 'news_site.urls'

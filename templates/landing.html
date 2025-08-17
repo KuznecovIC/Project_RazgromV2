@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{% static 'news/css/landing.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/telegram_news.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/reporters.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock %}
 
@@ -25,13 +26,104 @@
             </div>
             {% endif %}
         </div>
+        
+        {% if about_page %}
+        <section class="about-section" id="about">
+            <h2 class="about-title">{{ about_page.title }}</h2>
+            <div class="about-text">
+                {{ about_page.description|safe }}
+            </div>
+            
+            <div class="about-stats">
+                {% for key, value in about_page.stats.items %}
+                <div class="stat-item">
+                    <div class="stat-number">{{ value }}</div>
+                    <div class="stat-label">{{ key }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="reporters-section" id="reporters">
+            <h2 class="reporters-title">Наши лучшие репортёры</h2>
+            <div class="reporters-grid">
+                <div class="pc-card-wrapper">
+                    <div class="pc-card">
+                        <div class="pc-avatar-content">
+                            <img class="avatar" src="{% static 'news/images/reporters/reporter1_big.jpg' %}" alt="Аватар репортёра">
+                        </div>
+                        <div class="pc-details">
+                            <h3>Дмитрий Иванов</h3>
+                            <p>Главный редактор</p>
+                        </div>
+                        <div class="pc-user-info">
+                            <div class="pc-user-details">
+                                <div class="pc-mini-avatar">
+                                    <img src="{% static 'news/images/reporters/reporter1_mini.jpg' %}" alt="Мини-аватар">
+                                </div>
+                                <div class="pc-user-text">
+                                    <div class="pc-handle">@ivanov_dima</div>
+                                    <div class="pc-status">Онлайн</div>
+                                </div>
+                            </div>
+                            <button class="pc-contact-btn">Связаться</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="pc-card-wrapper">
+                    <div class="pc-card">
+                        <div class="pc-avatar-content">
+                            <img class="avatar" src="{% static 'news/images/reporters/reporter2_big.jpg' %}" alt="Аватар репортёра">
+                        </div>
+                        <div class="pc-details">
+                            <h3>Мария Смирнова</h3>
+                            <p>Специальный корреспондент</p>
+                        </div>
+                        <div class="pc-user-info">
+                            <div class="pc-user-details">
+                                <div class="pc-mini-avatar">
+                                    <img src="{% static 'news/images/reporters/reporter2_mini.jpg' %}" alt="Мини-аватар">
+                                </div>
+                                <div class="pc-user-text">
+                                    <div class="pc-handle">@smirnova_m</div>
+                                    <div class="pc-status">Онлайн</div>
+                                </div>
+                            </div>
+                            <button class="pc-contact-btn">Связаться</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="pc-card-wrapper">
+                    <div class="pc-card">
+                        <div class="pc-avatar-content">
+                            <img class="avatar" src="{% static 'news/images/reporters/reporter3_big.jpg' %}" alt="Аватар репортёра">
+                        </div>
+                        <div class="pc-details">
+                            <h3>Алексей Козлов</h3>
+                            <p>Обозреватель</p>
+                        </div>
+                        <div class="pc-user-info">
+                            <div class="pc-user-details">
+                                <div class="pc-mini-avatar">
+                                    <img src="{% static 'news/images/reporters/reporter3_mini.jpg' %}" alt="Мини-аватар">
+                                </div>
+                                <div class="pc-user-text">
+                                    <div class="pc-handle">@kozlov_a</div>
+                                    <div class="pc-status">Онлайн</div>
+                                </div>
+                            </div>
+                            <button class="pc-contact-btn">Связаться</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <div class="telegram-post-grid">
             {% for news_item in base_news %}
                 <div class="telegram-post-card 
-                    {% if forloop.counter == 1 %}
-                        telegram-post-card-right
-                    {% elif forloop.counter == 2 %}
+                    {% if forloop.counter|divisibleby:2 %}
                         telegram-post-card-left
                     {% else %}
                         telegram-post-card-right
