@@ -1,29 +1,36 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
-from .models import Reporter, User, NewsPost, AboutPage
+from .models import Reporter, User, NewsItem, AboutPage, Comment
 import datetime
 
+
 class BaseNewsMiddleware(MiddlewareMixin):
+
     def process_template_response(self, request, response):
         if hasattr(response, 'context_data'):
-            # Создаем или обновляем страницу "О нас"
             self.create_about_page()
+            self.create_news_posts_with_comments()
             
-            # Создаем или обновляем тестовые новости и репортеров
-            self.create_news_posts()
-            
-            # Добавляем данные в контекст
             response.context_data['about_page'] = AboutPage.objects.first()
-            response.context_data['base_news'] = NewsPost.objects.all().order_by('-created_at')[:3]
-        
+            
+            # Используем NewsItem, как указано в импорте
+            base_news = NewsItem.objects.all().order_by('-created_at')[:3]
+            response.context_data['base_news'] = base_news
+            
+            # Добавляем комментарии для каждой новости
+            for news_item in base_news:
+                comments = news_item.comments.all().order_by('-created_at')[:3]
+                news_item.latest_comments = comments
+                news_item.comment_count = news_item.comments.count()
+
         return response
     
     def create_about_page(self):
         about_data = {
             'title': "О нашем новостном ресурсе",
-            'description': """
-            <p>Мы - команда профессиональных журналистов, работающих 24/7, 
-            чтобы предоставлять вам самые свежие и достоверные новости.</p>
+            'description': """ 
+            <p>Мы - команда профессиональных журналистов, работающих 24/7,  
+            чтобы предоставлять вам самые свежие и достоверные новости.</p> 
             """,
             'stats': {
                 'years': 14,
@@ -34,12 +41,35 @@ class BaseNewsMiddleware(MiddlewareMixin):
         }
         
         AboutPage.objects.update_or_create(
-            id=1,  # Фиксированный ID для единственной страницы
+            id=1,
             defaults=about_data
         )
-    
-    def create_news_posts(self):
-        # Создаём или получаем тестовых репортёров
+
+    def create_news_posts_with_comments(self):
+        # Создаем или получаем тестовых пользователей
+        user1, _ = User.objects.get_or_create(
+            username='user1',
+            defaults={
+                'first_name': 'Алексей',
+                'last_name': 'Иванов'
+            }
+        )
+        user2, _ = User.objects.get_or_create(
+            username='user2',
+            defaults={
+                'first_name': 'Елена',
+                'last_name': 'Смирнова'
+            }
+        )
+        user3, _ = User.objects.get_or_create(
+            username='user3',
+            defaults={
+                'first_name': 'Никита',
+                'last_name': 'Козлов'
+            }
+        )
+        
+        # Создаем или получаем тестовых репортеров
         geo_reporter, _ = Reporter.objects.get_or_create(
             user__username='geo_reporter',
             defaults={
@@ -99,13 +129,28 @@ class BaseNewsMiddleware(MiddlewareMixin):
             },
         ]
         
-        # Создаём или обновляем новости
-        for news_item in base_news_data:
-            NewsPost.objects.update_or_create(
-                title=news_item['title'],
-                defaults={
-                    'reporter': news_item['reporter'],
-                    'text': news_item['text'],
-                    'created_at': news_item['created_at']
-                }
+        # Создаем или обновляем новости и добавляем комментарии
+        for news_item_data in base_news_data:
+            # Используем NewsItem
+            post, created = NewsItem.objects.update_or_create(
+                title=news_item_data['title'],
+                defaults=news_item_data
             )
+            
+            if created:
+                # Создаем несколько тестовых комментариев для новой новости
+                Comment.objects.create(
+                    post=post,
+                    user=user1,
+                    text="Отличная статья! Спасибо за аналитику."
+                )
+                Comment.objects.create(
+                    post=post,
+                    user=user2,
+                    text="Интересные подробности, жду продолжения."
+                )
+                Comment.objects.create(
+                    post=post,
+                    user=user3,
+                    text="Всегда читаю ваши репортажи, очень информативно."
+                )

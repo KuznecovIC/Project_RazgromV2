@@ -1,0 +1,90 @@
+/* counter.css */
+.views-counter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    font-size: 0.9em;
+    color: #666;
+}
+
+body.dark-theme .views-counter {
+    color: #aaa;
+}
+
+.views-counter i {
+    color: var(--primary-color);
+}
+
+.counter-container {
+    position: relative;
+    display: inline-block;
+}
+
+.counter-counter {
+    display: flex;
+    overflow: hidden;
+    line-height: 1;
+}
+
+.counter-digit {
+    position: relative;
+    width: 1ch;
+    font-variant-numeric: tabular-nums;
+    height: 1em;
+    overflow: hidden;
+}
+
+.counter-number {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s ease-in-out;
+}
+
+.gradient-container {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bottom-gradient {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Анимация для счетчика */
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.counter-digit.animating .counter-number {
+    animation: slideUp 0.5s ease-in-out;
+}
+
+.counter-digit.animating .counter-number.new {
+    animation: slideDown 0.5s ease-in-out;
+}

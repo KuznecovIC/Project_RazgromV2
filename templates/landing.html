@@ -2,10 +2,11 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'news/css/landing.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/telegram_news.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/reporters.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/why_us.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/counter.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock %}
 
@@ -120,18 +121,71 @@
             </div>
         </section>
 
+        <section class="why-us-section" id="why-us">
+            <h2 class="why-us-title">Почему выбирают нас?</h2>
+            <div class="why-us-grid">
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <h3>Оперативность</h3>
+                    <p>Мы работаем круглосуточно, чтобы вы первыми узнавали о самых важных событиях.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3>Достоверность</h3>
+                    <p>Наша команда репортёров тщательно проверяет каждый факт, чтобы избежать фейков.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h3>Глобальный охват</h3>
+                    <p>Мы освещаем события со всего мира, предоставляя полную картину происходящего.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3>Глубокий анализ</h3>
+                    <p>Мы не просто сообщаем новости, но и предоставляем экспертный анализ и прогнозы.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3>Сильное сообщество</h3>
+                    <p>Присоединяйтесь к обсуждениям и делитесь своим мнением с другими читателями.</p>
+                </div>
+                <div class="why-us-card">
+                    <div class="why-us-icon">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                    <h3>Независимость</h3>
+                    <p>Наш ресурс не зависит от политических и коммерческих структур, что гарантирует объективность.</p>
+                </div>
+            </div>
+        </section>
+
         <div class="telegram-post-grid">
             {% for news_item in base_news %}
-                <div class="telegram-post-card 
+                <div class="telegram-post-card
                     {% if forloop.counter|divisibleby:2 %}
                         telegram-post-card-left
                     {% else %}
                         telegram-post-card-right
-                    {% endif %}">
+                    {% endif %}"
+                    data-news-id="{{ news_item.id }}">
                     <div class="telegram-post-content">
                         <div class="telegram-post-header">
                             <i class="fas fa-user-circle reporter-icon"></i>
                             <span class="telegram-post-reporter">{{ news_item.reporter }}</span>
+                            <div class="views-counter">
+                                <i class="fas fa-eye"></i>
+                                <span class="views-count" data-views="{{ news_item.views }}">{{ news_item.views }}</span>
+                            </div>
                         </div>
                         <h2 class="telegram-post-title">{{ news_item.title }}</h2>
                         <p class="telegram-post-text">{{ news_item.text }}</p>
@@ -140,6 +194,25 @@
                                 Опубликовано: {{ news_item.created_at|date:"d M Y в H:i" }}
                             </small>
                         </p>
+                        
+                        <div class="telegram-post-comments">
+                            <a href="{% url 'news:news_comments' news_item.id %}" class="comment-area-link">
+                                <div class="comment-summary">
+                                    {% if news_item.latest_comments %}
+                                    <div class="comment-avatars">
+                                        {% for comment in news_item.latest_comments %}
+                                            <img src="{% static 'news/images/avatars/default.jpg' %}" alt="Аватар {{ comment.user.username }}">
+                                        {% endfor %}
+                                    </div>
+                                    <span class="comment-count">
+                                        {{ news_item.comment_count }} комментариев
+                                    </span>
+                                    {% else %}
+                                    <span class="comment-count">Нет комментариев</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     <div class="telegram-post-image">
                         <img src="{% static 'news/images/news' %}{{ forloop.counter }}.jpg" alt="News Image">
@@ -156,6 +229,7 @@
 
 {% block extra_scripts %}
     <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
+    <script type="module" src="{% static 'news/js/counter.js' %}"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const themeEvent = new Event('themeChanged');

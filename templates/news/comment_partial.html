@@ -1,0 +1,27 @@
+<div class="telegram-message comment-message">
+    <div class="message-header">
+        <i class="fas fa-user-circle message-user-icon"></i>
+        <span class="message-author">{{ comment.user.username }}</span>
+        <span class="message-date">{{ comment.created_at|date:"d M Y в H:i" }}</span>
+    </div>
+    <div class="message-content">
+        {% if comment.is_voice_message and comment.audio_file %}
+            <div class="voice-message-container">
+                <button class="voice-play-btn" data-audio-url="{{ comment.audio_file.url }}"><i class="fas fa-play"></i></button>
+                <canvas class="voice-visualizer-display" width="200" height="40"></canvas>
+                <span class="voice-duration" data-duration="{{ comment.audio_duration|default:0 }}">
+                    {% if comment.audio_duration %}
+                        {{ comment.audio_duration }} секунд
+                    {% else %}
+                        0:00
+                    {% endif %}
+                </span>
+            </div>
+        {% elif comment.image %}
+            <p class="post-text">{{ comment.text }}</p>
+            <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image">
+        {% else %}
+            <p>{{ comment.text }}</p>
+        {% endif %}
+    </div>
+</div>

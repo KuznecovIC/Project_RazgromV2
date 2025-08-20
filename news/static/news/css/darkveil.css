@@ -1,3 +1,23 @@
+:root {
+  /* Переменные для светлой темы */
+  --theme-bg-color: #f0f2f5;
+  --theme-text-color: #1a1a1a;
+  --theme-secondary-text-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-theme {
+  /* Переменные для тёмной темы */
+  --theme-bg-color: #1a1a1a;
+  --theme-text-color: #f0f2f5;
+  --theme-secondary-text-color: rgba(255, 255, 255, 0.7);
+}
+
+body {
+  background-color: var(--theme-bg-color);
+  color: var(--theme-text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .darkveil-canvas {
     position: fixed;
     top: 0;

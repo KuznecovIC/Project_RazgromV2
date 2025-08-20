@@ -1,0 +1,463 @@
+/* Переопределяем фон для страницы комментариев, чтобы он был как у лендинга */
+body {
+    background: var(--background-dark);
+    color: var(--text-color-dark);
+    /* Переменные CSS для удобного управления цветами */
+    --background-dark: #121212;
+    --text-color-dark: #e0e0e0;
+}
+
+body.dark-theme {
+    background: var(--background-dark);
+}
+
+/* Контейнер для всех сообщений */
+.comments-container {
+    padding: 20px;
+    padding-top: 120px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 100px;
+}
+
+/* Общий стиль для сообщений (пост и комментарии) - СТЕКЛЯННЫЙ ЭФФЕКТ */
+.telegram-message {
+    padding: 12px 18px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    max-width: 85%;
+    position: relative;
+    /* Базовые стили для "стеклянного" эффекта */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Стиль для поста новости (первое сообщение слева) - СТЕКЛЯННЫЙ ЭФФЕКТ */
+.post-message {
+    background-color: rgba(43, 82, 120, 0.5);
+    color: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.post-message .post-title {
+    font-size: 1.3em;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.post-message .post-text {
+    font-size: 1em;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.post-message .post-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+/* Стиль для комментариев (сообщения справа) - СТЕКЛЯННЫЙ ЭФФЕКТ */
+.comment-message {
+    background-color: rgba(79, 93, 105, 0.5);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+/* Заголовок сообщения (автор и дата) */
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.message-author {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.message-date {
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.post-reporter-icon,
+.message-user-icon {
+    font-size: 1.2em;
+    color: #fff;
+}
+
+.empty-comments-message {
+    text-align: center;
+    font-size: 1.1em;
+    color: #aaa;
+    margin-top: 50px;
+}
+
+/* Фиксированная форма для отправки комментариев */
+.comment-input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    background: #1e1e1e;
+    border-top: 1px solid #333;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.comment-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.comment-form textarea {
+    flex-grow: 1;
+    height: 40px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    resize: none;
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.5;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.comment-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
+    color: #999;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: #fff;
+}
+
+.btn-send {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4d565e;
+    color: #fff;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-send:hover {
+    background-color: #3e8ec4;
+}
+
+/* Стили для модального окна изображений */
+.image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-modal-content {
+    background-color: rgba(43, 82, 120, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.image-modal.active {
+    opacity: 1;
+    display: flex;
+}
+
+.image-modal.active .image-modal-content {
+    transform: scale(1);
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.image-modal .comment-field {
+    width: 100%;
+    min-height: 40px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    resize: none;
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.image-modal .modal-line {
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 15px 0;
+}
+
+.image-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-modal {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-modal-cancel {
+    background-color: #555;
+    color: #fff;
+}
+
+.btn-modal-cancel:hover {
+    background-color: #777;
+}
+
+.btn-modal-send {
+    background-color: #52a4e8;
+    color: #fff;
+}
+
+.btn-modal-send:hover {
+    background-color: #3e8ec4;
+}
+
+/* Стили для отображения голосового сообщения в комментариях */
+.voice-message-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(43, 82, 120, 0.5);
+    border-radius: 20px;
+    padding: 8px 15px;
+    max-width: 100%;
+    width: auto;
+}
+
+.voice-play-btn {
+    background-color: #52a4e8;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.voice-play-btn:hover {
+    background-color: #3e8ec4;
+}
+
+.voice-visualizer-display {
+    flex-grow: 1;
+    height: 40px;
+    background-color: transparent;
+    border-radius: 20px;
+}
+
+.voice-duration {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Стили для модального окна записи голоса */
+.voice-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.voice-modal-content {
+    background-color: rgba(43, 82, 120, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    width: 350px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.voice-timer {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    color: #fff;
+}
+
+.voice-visualizer-area {
+    margin-bottom: 20px;
+}
+
+/* Общие стили для кнопок управления в модальном окне */
+.voice-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+.voice-control-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Стиль для кнопки записи */
+.voice-control-btn#voice-record-btn {
+    background-color: #ff5252;
+}
+
+.voice-control-btn#voice-record-btn:hover {
+    background-color: #e53935;
+}
+
+/* Стиль для кнопки остановки */
+.voice-control-btn#voice-stop-btn {
+    background-color: #52a4e8;
+}
+
+.voice-control-btn#voice-stop-btn:hover {
+    background-color: #3e8ec4;
+}
+
+/* Стиль для кнопки отмены (новая) */
+.voice-control-btn#voice-cancel-btn {
+    background-color: #6c757d;
+}
+
+.voice-control-btn#voice-cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Стиль для кнопки отправки */
+.voice-control-btn#voice-send-btn {
+    background-color: #28a745;
+}
+
+.voice-control-btn#voice-send-btn:hover {
+    background-color: #218838;
+}
+
+/* Стили для изображений в комментариях */
+.comment-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.comment-auth-message {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1e1e1e;
+    border-top: 1px solid #333;
+}
+
+.comment-auth-message a {
+    color: #52a4e8;
+    text-decoration: none;
+}
+
+.comment-auth-message a:hover {
+    text-decoration: underline;
+}

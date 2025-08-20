@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/telegram_news.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/comments.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+{% endblock %}
+
+{% block title %}Комментарии к новости{% endblock %}
+
+{% block content %}
+    <canvas class="darkveil-canvas"></canvas>
+
+    <div class="comments-container">
+        <div class="telegram-message post-message">
+            <div class="message-header">
+                <i class="fas fa-user-circle post-reporter-icon"></i>
+                <span class="message-author">{{ news_item.reporter }}</span>
+                <span class="message-date">{{ news_item.created_at|date:"d M Y в H:i" }}</span>
+            </div>
+            <div class="message-content">
+                <h2 class="post-title">{{ news_item.title }}</h2>
+                <p class="post-text">{{ news_item.text }}</p>
+                <img src="{% static 'news/images/news' %}{{ news_item.id }}.jpg" alt="News Image" class="post-image">
+            </div>
+        </div>
+        
+        {% for comment in news_item.comments.all %}
+        <div class="telegram-message comment-message">
+            <div class="message-header">
+                <i class="fas fa-user-circle message-user-icon"></i>
+                <span class="message-author">{{ comment.user.username }}</span>
+                <span class="message-date">{{ comment.created_at|date:"d M Y в H:i" }}</span>
+            </div>
+            <div class="message-content">
+                {% if comment.is_voice_message and comment.audio_file %}
+                    <div class="voice-message-container">
+                        <button class="voice-play-btn" data-audio-url="{{ comment.audio_file.url }}"><i class="fas fa-play"></i></button>
+                        <canvas class="voice-visualizer-display" width="200" height="40"></canvas>
+                        <span class="voice-duration" data-duration="{{ comment.audio_duration|default:0 }}">
+                            {% if comment.audio_duration %}
+                                {{ comment.audio_duration }} секунд
+                            {% else %}
+                                0:00
+                            {% endif %}
+                        </span>
+                    </div>
+                {% elif comment.image %}
+                    <p class="post-text">{{ comment.text }}</p>
+                    <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image">
+                {% else %}
+                    <p>{{ comment.text }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-comments-message">
+            Комментариев пока нет. Будьте первым!
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="comment-input-area">
+        <form method="post" class="comment-form" action="{% url 'news:add_comment' news_item.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="comment-buttons">
+                <button type="button" class="btn-icon" id="image-btn"><i class="fas fa-image"></i></button>
+                <button type="button" class="btn-icon" id="voice-btn"><i class="fas fa-microphone"></i></button>
+            </div>
+            <textarea name="comment_text" placeholder="Напишите ваш комментарий..." required></textarea>
+            <input type="hidden" name="voice_duration" id="voice-duration-input" value="0">
+            <button type="submit" class="btn-send"><i class="fas fa-paper-plane"></i></button>
+        </form>
+        <input type="file" id="file-input" accept="image/*" style="display: none;">
+    </div>
+    {% else %}
+    <div class="comment-auth-message">
+        Чтобы оставить комментарий, <a href="{% url 'news:login' %}">войдите в систему</a>.
+    </div>
+    {% endif %}
+
+    <div class="image-modal">
+        <div class="image-modal-content">
+            <img src="#" alt="Изображение для предпросмотра" class="image-preview">
+            <textarea class="comment-field" placeholder="Добавьте подпись к изображению..."></textarea>
+            <hr class="modal-line">
+            <div class="image-modal-buttons">
+                <button type="button" class="btn-modal btn-modal-cancel">Отмена</button>
+                <button type="button" class="btn-modal btn-modal-send">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    {# Модальное окно голосового сообщения с кнопкой выхода #}
+    <div class="voice-modal">
+        <div class="voice-modal-content">
+            <div class="voice-timer">
+                <span class="voice-duration">0:00</span>
+            </div>
+            <div class="voice-visualizer-area">
+                <canvas id="voice-visualizer" width="300" height="60"></canvas>
+            </div>
+            <div class="voice-controls">
+                <button class="voice-control-btn" id="voice-record-btn"><i class="fas fa-microphone"></i></button>
+                <button class="voice-control-btn" id="voice-stop-btn" style="display: none;"><i class="fas fa-stop"></i></button>
+                <button class="voice-control-btn" id="voice-send-btn" style="display: none;"><i class="fas fa-paper-plane"></i></button>
+                <button class="voice-control-btn" id="voice-cancel-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
+    <script type="module" src="{% static 'news/js/comments.js' %}"></script>
+{% endblock %}

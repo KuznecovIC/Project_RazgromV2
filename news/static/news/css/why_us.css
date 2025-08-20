@@ -1,0 +1,77 @@
+/* Стили для раздела "Почему мы?" */
+.why-us-section {
+    padding: 80px 20px;
+    /* Убираем фоновый цвет, чтобы видеть фон страницы */
+    background: transparent;
+    transition: background 0.3s ease;
+    text-align: center;
+}
+
+.why-us-title {
+    font-size: 3rem;
+    margin-bottom: 60px;
+    color: var(--theme-text-color);
+    transition: color 0.3s ease;
+}
+
+.why-us-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.why-us-card {
+    /* Добавляем эффект стеклянной карточки */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 40px 20px;
+    width: 320px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.why-us-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-10px);
+}
+
+.why-us-icon {
+    font-size: 3.5rem;
+    color: #4CAF50; /* Зеленый цвет для иконок */
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.why-us-card:hover .why-us-icon {
+    color: #81C784;
+}
+
+.why-us-card h3 {
+    font-size: 1.5rem;
+    color: var(--theme-text-color);
+    margin-bottom: 10px;
+}
+
+.why-us-card p {
+    font-size: 1rem;
+    color: var(--theme-secondary-text-color);
+    line-height: 1.5;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .why-us-title {
+        font-size: 2.5rem;
+    }
+    .why-us-card {
+        width: 100%;
+    }
+}

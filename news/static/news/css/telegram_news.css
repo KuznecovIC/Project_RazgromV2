@@ -8,9 +8,23 @@
     --background-dark: #121212;
     --card-bg-light: rgba(255, 255, 255, 0.9);
     --card-bg-dark: rgba(30, 30, 30, 0.9);
+
+    /* Переменные из второго файла для главной страницы */
+    --body-bg-color: #ffffff;
+    --text-color: #313131;
+    --wave-color: #0d1117;
 }
 
-/* Базовые стили для структуры (Исправлено) */
+body.dark-theme {
+    /* Переменные из второго файла для главной страницы */
+    --body-bg-color: #0d1117;
+    --text-color: #ffffff;
+    --wave-color: #ffffff;
+
+    background-color: var(--background-dark);
+}
+
+/* Базовые стили для структуры */
 html, body {
     height: 100%;
     margin: 0;
@@ -23,10 +37,6 @@ body {
     transition: background-color 0.3s ease;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-}
-
-body.dark-theme {
-    background-color: var(--background-dark);
 }
 
 main {
@@ -233,6 +243,7 @@ body.dark-theme .telegram-post-card {
 .telegram-post-content {
     flex: 1;
     padding: 0 20px;
+    position: relative;
 }
 
 .telegram-post-image {
@@ -250,6 +261,7 @@ body.dark-theme .telegram-post-card {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     transition: transform 0.3s ease;
 }
 
@@ -261,6 +273,7 @@ body.dark-theme .telegram-post-card {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .reporter-icon {
@@ -298,6 +311,133 @@ body.dark-theme .telegram-post-meta {
     color: #aaa;
 }
 
+/* Стили для блока комментариев */
+.telegram-post-comments {
+    margin-top: 20px;
+    padding-top: 15px;
+    position: relative;
+    width: 100%;
+}
+
+/* Линия-разделитель */
+.telegram-post-content::after {
+    content: '';
+    position: absolute;
+    bottom: 60px; /* Увеличено, чтобы линия была выше блока с комментариями */
+    left: 20px;
+    right: 0;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-theme .telegram-post-content::after {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Стили для кликабельной области */
+.comment-area-link {
+    display: block; /* Заставляет ссылку занимать всю ширину */
+    text-decoration: none; /* Убирает подчеркивание по умолчанию */
+    color: inherit; /* Наследует цвет текста от родительского элемента */
+}
+
+.comment-area-link:hover {
+    cursor: pointer; /* Показывает курсор-указатель при наведении */
+}
+
+/* Контейнер для аватаров и текста */
+.comment-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Стили для группы аватаров */
+.comment-avatars {
+    display: flex;
+    position: relative;
+}
+
+.comment-avatars img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--background-light);
+    object-fit: cover;
+    margin-left: -10px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+body.dark-theme .comment-avatars img {
+    border-color: var(--background-dark);
+}
+
+.comment-avatars img:first-child {
+    margin-left: 0;
+}
+
+/* Текст "количество комментариев" */
+.comment-count {
+    color: var(--primary-color);
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.comment-area-link:hover .comment-count {
+    text-decoration: underline;
+}
+
+/* Стили для счетчика просмотров */
+.views-counter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    font-size: 0.9em;
+    color: #666;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px 8px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+body.dark-theme .views-counter {
+    color: #aaa;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.views-counter:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-theme .views-counter:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.views-counter i {
+    color: var(--primary-color);
+    font-size: 0.8em;
+}
+
+.views-count {
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Анимация пульсации для счетчика */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.views-counter.updated {
+    animation: pulse 0.5s ease;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .telegram-post-card {
@@ -326,6 +466,11 @@ body.dark-theme .telegram-post-meta {
         min-width: calc(50% - 20px);
         padding: 15px;
     }
+
+    .telegram-post-content::after {
+        left: 20px;
+        right: 20px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -339,5 +484,10 @@ body.dark-theme .telegram-post-meta {
     
     .stat-item {
         min-width: 100%;
+    }
+    
+    .views-counter {
+        font-size: 0.8em;
+        padding: 3px 6px;
     }
 }
