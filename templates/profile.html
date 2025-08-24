@@ -1,0 +1,742 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'news/css/darkveil.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/telegram_news.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <style>
+        /* Восстанавливаем фон darkveil */
+        body {
+            background: var(--bg-gradient) !important;
+            min-height: 100vh;
+        }
+
+        .darkveil-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Стеклянные карточки для всех колонок */
+        .profile-info-column.glass-card,
+        .profile-settings-column .glass-card,
+        .profile-analytics-column .glass-card {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Карандаш в центре аватара */
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar-icon {
+            font-size: 120px;
+            color: #ccc;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-avatar-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .profile-avatar-wrapper:hover .edit-avatar-overlay {
+            opacity: 1;
+        }
+
+        .profile-avatar-wrapper:hover .profile-avatar,
+        .profile-avatar-wrapper:hover .profile-avatar-icon {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* Индикатор статуса */
+        .status-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid #2f3136;
+            z-index: 3;
+        }
+
+        .status-online { background-color: #23a55a; }
+        .status-idle { background-color: #f0b232; }
+        .status-dnd { background-color: #f23f43; }
+        .status-offline { background-color: #80848e; }
+        .status-invisible { background-color: #80848e; }
+
+        /* Остальные стили */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-reporter {
+            background: rgba(88, 101, 242, 0.2);
+            color: #5865f2;
+        }
+
+        .status-admin {
+            background: rgba(235, 69, 158, 0.2);
+            color: #eb459e;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .profile-details {
+            color: #f6f6f7;
+        }
+
+        .profile-details p {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            color: #b9bbbe;
+        }
+
+        .profile-details .icon {
+            width: 20px;
+            margin-right: 10px;
+            color: #61b3dc;
+        }
+
+        .status-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .status-selector h4 {
+            margin-bottom: 15px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .status-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status-option.active {
+            background: rgba(88, 101, 242, 0.2);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .profile-avatar-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .profile-avatar-icon {
+                font-size: 100px;
+            }
+            
+            .status-indicator {
+                width: 16px;
+                height: 16px;
+                bottom: 3px;
+                right: 3px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+    <canvas class="darkveil-canvas"></canvas>
+
+    <div class="content-wrapper">
+        <div class="profile-container">
+            <!-- Левая колонка - Информация -->
+            <div class="profile-info-column glass-card">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper" id="avatar-container">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="Аватар пользователя" class="profile-avatar" id="profile-avatar">
+                        {% else %}
+                            <i class="fas fa-user-circle profile-avatar-icon" id="profile-avatar-icon"></i>
+                        {% endif %}
+                        <div class="edit-avatar-overlay">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <span class="status-indicator status-{{ user.profile.status }}"></span>
+                        <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="profile-username-wrapper">
+                        <h2>{{ user.username }}</h2>
+                        <span class="unique-username">@{{ user.username }}</span>
+                        
+                        <div class="user-status">
+                            <span class="status-text">
+                                {% if user.profile.custom_status %}
+                                    {{ user.profile.custom_status }}
+                                {% else %}
+                                    {{ user.profile.get_status_display }}
+                                {% endif %}
+                            </span>
+                            {% if user.is_staff %}
+                                <span class="status-badge status-admin">
+                                    <i class="fas fa-crown"></i> Админ
+                                </span>
+                            {% elif user.profile.is_reporter %}
+                                <span class="status-badge status-reporter">
+                                    <i class="fas fa-pencil-alt"></i> Репортёр
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <p><i class="fas fa-envelope icon"></i> {{ user.email }}</p>
+                    <p><i class="fas fa-calendar-alt icon"></i> Зарегистрирован: {{ user.date_joined|date:"d M Y" }}</p>
+                    <p><i class="fas fa-clock icon"></i> 
+                        {% if user.profile.is_online %}
+                            <span style="color: #23a55a;">В сети</span>
+                        {% else %}
+                            Был(а) в сети: {{ user.profile.last_activity|timesince }} назад
+                        {% endif %}
+                    </p>
+                    
+                    {% if user.profile.bio %}
+                    <div class="profile-bio">
+                        <i class="fas fa-info-circle icon"></i>
+                        <p>{{ user.profile.bio }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Центральная колонка - Настройки -->
+            <div class="profile-settings-column">
+                <div class="profile-card glass-card">
+                    <h3><i class="fas fa-user-cog"></i> Настройки профиля</h3>
+                    <form method="post" enctype="multipart/form-data" class="profile-form" id="profile-form">
+                        {% csrf_token %}
+                        <div class="form-field">
+                            <label for="{{ form.bio.id_for_label }}">{{ form.bio.label }}</label>
+                            {{ form.bio }}
+                        </div>
+                        
+                        <div class="status-selector">
+                            <h4>Статус:</h4>
+                            {% for value, label in form.fields.status.choices %}
+                                <div class="status-option {% if user.profile.status == value %}active{% endif %}" 
+                                     data-status="{{ value }}">
+                                    <span class="status-indicator status-{{ value }}" style="position: static; margin-right: 10px;"></span>
+                                    <span>{{ label }}</span>
+                                </div>
+                            {% endfor %}
+                            <input type="hidden" name="status" id="id_status" value="{{ user.profile.status }}">
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Сохранить изменения</button>
+                    </form>
+                    <a href="{% url 'password_change' %}" class="change-password-link">Изменить пароль</a>
+                </div>
+            </div>
+
+            <!-- Правая колонка - Аналитика -->
+            <div class="profile-analytics-column">
+                {% if user.profile.is_reporter or user.is_staff %}
+                <div class="profile-card glass-card create-news-card">
+                    <h3><i class="fas fa-plus-circle"></i> Создать новость</h3>
+                    <p>Поделитесь актуальными событиями и новостями с сообществом.</p>
+                    <a href="#" class="create-news-btn">Написать новость</a>
+                </div>
+                {% endif %}
+                
+                <div class="profile-card glass-card analytics-card">
+                    <h3><i class="fas fa-chart-bar"></i> Аналитика новостей</h3>
+                    <p>Статистика ваших публикаций и активности</p>
+                    <ul class="analytics-list">
+                        <li><strong>Опубликовано новостей:</strong> <span>5</span></li>
+                        <li><strong>Всего просмотров:</strong> <span>1,567</span></li>
+                        <li><strong>Всего комментариев:</strong> <span>42</span></li>
+                        <li><strong>Лайков:</strong> <span>128</span></li>
+                        <li><strong>Репутация:</strong> <span>⭐ 4.8/5</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для обрезки аватара -->
+    <div id="avatar-modal" class="modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>Обрезка аватара</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="crop-container">
+                    <img id="image-to-crop" src="" alt="Изображение для обрезки">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancel-crop-btn">Отмена</button>
+                    <button type="button" class="btn-primary" id="crop-save-btn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script type="module" src="{% static 'news/js/darkveil.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация darkveil фона
+            const themeEvent = new Event('themeChanged');
+            document.dispatchEvent(themeEvent);
+
+            // Обновление активности пользователя
+            function updateActivity() {
+                fetch('{% url "news:update_activity" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+            }
+            updateActivity();
+            setInterval(updateActivity, 120000);
+            document.addEventListener('click', updateActivity);
+            document.addEventListener('keypress', updateActivity);
+
+            // Обработка выбора статуса
+            const statusOptions = document.querySelectorAll('.status-option');
+            const statusInput = document.getElementById('id_status');
+            
+            statusOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    statusOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    const newStatus = this.dataset.status;
+                    statusInput.value = newStatus;
+                    
+                    // Обновляем статус на сервере
+                    fetch('{% url "news:update_status" %}', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `status=${newStatus}`
+                    });
+                });
+            });
+
+            // Логика для загрузки и обрезки аватара
+            const avatarContainer = document.getElementById('avatar-container');
+            const avatarUploadInput = document.getElementById('avatar-upload');
+            const avatarModal = document.getElementById('avatar-modal');
+            const imageToCrop = document.getElementById('image-to-crop');
+            const cropSaveBtn = document.getElementById('crop-save-btn');
+            const closeBtn = avatarModal.querySelector('.close');
+            const cancelCropBtn = document.getElementById('cancel-crop-btn');
+            let cropper;
+
+            // Функция для открытия модального окна
+            function openAvatarModal() {
+                avatarModal.style.display = 'block';
+                // Добавляем класс для анимации
+                setTimeout(() => {
+                    avatarModal.classList.add('active');
+                }, 10);
+            }
+
+            // Функция для закрытия модального окна
+            function closeAvatarModal() {
+                avatarModal.classList.remove('active');
+                setTimeout(() => {
+                    avatarModal.style.display = 'none';
+                    if (cropper) {
+                        cropper.destroy();
+                        cropper = null;
+                    }
+                }, 300);
+            }
+
+            // Клик по аватару
+            avatarContainer.addEventListener('click', () => {
+                avatarUploadInput.click();
+            });
+
+            // Обработка выбора файла
+            avatarUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        imageToCrop.src = event.target.result;
+                        openAvatarModal();
+                        
+                        // Инициализация cropper после загрузки изображения
+                        setTimeout(() => {
+                            if (cropper) {
+                                cropper.destroy();
+                            }
+                            cropper = new Cropper(imageToCrop, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                movable: true,
+                                scalable: true,
+                                rotatable: true,
+                                zoomable: true,
+                                cropBoxMovable: true,
+                                cropBoxResizable: true,
+                                dragMode: 'move',
+                                guides: false,
+                                background: false,
+                                autoCropArea: 0.8,
+                                checkOrientation: false,
+                                responsive: true,
+                                ready: function() {
+                                    // Устанавливаем размер области обрезки
+                                    const containerData = this.cropper.getContainerData();
+                                    const size = Math.min(containerData.width, containerData.height) * 0.8;
+                                    this.cropper.setCropBoxData({
+                                        width: size,
+                                        height: size
+                                    });
+                                }
+                            });
+                        }, 100);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Пожалуйста, выберите изображение');
+                }
+            });
+
+            // Сохранение обрезанного изображения
+            cropSaveBtn.addEventListener('click', () => {
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas({
+                        width: 256,
+                        height: 256,
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high'
+                    });
+                    
+                    croppedCanvas.toBlob((blob) => {
+                        const formData = new FormData();
+                        formData.append('avatar', blob, 'avatar.jpg');
+                        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+                        // Показываем индикатор загрузки
+                        cropSaveBtn.disabled = true;
+                        cropSaveBtn.textContent = 'Загрузка...';
+
+                        fetch('{% url "news:update_avatar" %}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Обновляем аватар на странице
+                                const avatarImg = document.getElementById('profile-avatar');
+                                if (avatarImg) {
+                                    avatarImg.src = data.avatar_url + '?t=' + new Date().getTime();
+                                }
+                                // Скрываем иконку если она была
+                                const avatarIcon = document.getElementById('profile-avatar-icon');
+                                if (avatarIcon) {
+                                    avatarIcon.style.display = 'none';
+                                }
+                                closeAvatarModal();
+                                alert('Аватар успешно обновлен!');
+                            } else {
+                                alert('Ошибка: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            alert('Ошибка загрузки: ' + error.message);
+                        })
+                        .finally(() => {
+                            cropSaveBtn.disabled = false;
+                            cropSaveBtn.textContent = 'Сохранить';
+                        });
+                    }, 'image/jpeg', 0.9);
+                }
+            });
+            
+            // Закрытие модального окна
+            closeBtn.addEventListener('click', closeAvatarModal);
+            cancelCropBtn.addEventListener('click', closeAvatarModal);
+            
+            // Закрытие по клику вне модального окна
+            window.addEventListener('click', (event) => {
+                if (event.target === avatarModal) {
+                    closeAvatarModal();
+                }
+            });
+
+            // Закрытие по ESC
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && avatarModal.style.display === 'block') {
+                    closeAvatarModal();
+                }
+            });
+
+        });
+    </script>
+
+    <style>
+        /* Стили для модального окна */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: auto;
+            background: rgba(47, 49, 54, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .close:hover {
+            color: #61b3dc;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .crop-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #image-to-crop {
+            display: block;
+            max-width: 100%;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: #61b3dc;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #4a90e2;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Стили для cropper */
+        .cropper-view-box,
+        .cropper-face {
+            border-radius: 50%;
+        }
+
+        .cropper-view-box {
+            outline: 2px solid #61b3dc;
+            outline-color: rgba(97, 179, 220, 0.8);
+        }
+
+        .cropper-line {
+            background-color: #61b3dc;
+        }
+
+        .cropper-point {
+            background-color: #61b3dc;
+            width: 8px;
+            height: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                max-width: none;
+            }
+            
+            .crop-container {
+                height: 300px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+{% endblock %}

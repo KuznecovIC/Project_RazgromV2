@@ -1,4 +1,3 @@
-# Файл: news/models.py
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -24,9 +23,64 @@ class User(AbstractUser):
         related_query_name='news_user'
     )
 
+class UserProfile(models.Model):
+    STATUS_CHOICES = [
+        ('online', 'В сети'),
+        ('idle', 'Неактивен'),
+        ('dnd', 'Не беспокоить'),
+        ('offline', 'Не в сети'),
+        ('invisible', 'Невидимый'),
+    ]
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(
+        upload_to='users/avatars/',
+        verbose_name="Аватар",
+        blank=True,
+        null=True
+    )
+    bio = models.TextField(verbose_name="Биография", blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='online',
+        verbose_name="Статус"
+    )
+    custom_status = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Пользовательский статус"
+    )
+    is_reporter = models.BooleanField(
+        default=False,
+        verbose_name="Репортёр"
+    )
+    last_activity = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Последняя активность"
+    )
+    
+    class Meta:
+        verbose_name = "Профиль пользователя"
+        verbose_name_plural = "Профили пользователей"
+    
+    def __str__(self):
+        return f"Профиль {self.user.username}"
+    
+    def get_display_status(self):
+        """Возвращает отображаемый статус с учетом невидимости"""
+        if self.status == 'invisible':
+            return 'offline'
+        return self.status
+    
+    def is_online(self):
+        """Проверяет, онлайн ли пользователь"""
+        if self.status in ['offline', 'invisible']:
+            return False
+        return timezone.now() - self.last_activity < timezone.timedelta(minutes=5)
+
 class Reporter(models.Model):
-    # Используем прямую ссылку на модель User
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='reporter')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='reporter_profile')
     bio = models.TextField(verbose_name="Биография", blank=True)
     profile_picture = models.ImageField(
         upload_to='reporters/profile_pics/',
@@ -50,11 +104,9 @@ class Reporter(models.Model):
         return f"{self.user.get_full_name() or self.user.username}"
 
 class NewsItem(models.Model):
-    # существующие поля...
     views = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
-    # Используем прямую ссылку на модель Reporter
     reporter = models.ForeignKey(
-        'Reporter',  # Ссылка как строка, если Reporter определен ниже
+        'Reporter',
         on_delete=models.SET_NULL,
         verbose_name="Автор",
         null=True,
@@ -80,18 +132,13 @@ class NewsItem(models.Model):
         return self.title
 
 class Comment(models.Model):
-    # Используем прямую ссылку на модель User
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # Используем прямую ссылку на модель NewsItem
     news_item = models.ForeignKey('NewsItem', on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
     image = models.ImageField(upload_to='comment_images/', blank=True, null=True)
-    
     audio_file = models.FileField(upload_to='voice_messages/', blank=True, null=True)
     is_voice_message = models.BooleanField(default=False)
-    
     audio_duration = models.IntegerField(blank=True, null=True, help_text="Длительность аудио в секундах")
 
     class Meta:

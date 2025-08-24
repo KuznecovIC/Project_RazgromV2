@@ -8,8 +8,220 @@
     <link rel="icon" href="{% static 'news/favicon.webp' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'news/css/gooey_nav.css' %}">
     <link rel="stylesheet" href="{% static 'news/css/messages.css' %}">
+    <link rel="stylesheet" href="{% static 'news/css/user_dropdown.css' %}">
     {% block extra_head %}{% endblock %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <style>
+        /* Стили для аватара в навигации */
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Кружочек статуса в навигации */
+        .nav-status-indicator {
+            position: relative;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+            border: 2px solid var(--bg-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-status-indicator:hover {
+            transform: scale(1.2);
+        }
+
+        .nav-status-indicator.status-online { background-color: #23a55a; }
+        .nav-status-indicator.status-idle { background-color: #f0b232; }
+        .nav-status-indicator.status-dnd { background-color: #f23f43; }
+        .nav-status-indicator.status-offline { background-color: #80848e; }
+        .nav-status-indicator.status-invisible { background-color: #80848e; }
+
+        /* Подсказка статуса */
+        .status-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(47, 49, 54, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1001;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(47, 49, 54, 0.95) transparent transparent transparent;
+        }
+
+        .status-tooltip small {
+            color: #b9bbbe;
+            font-size: 11px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .nav-status-indicator:hover .status-tooltip {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Стеклянный профиль в выпадающем меню */
+        .glass-profile-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .glass-profile-dropdown.show-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-dropdown-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-dropdown-info h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #fff;
+        }
+
+        .profile-dropdown-info p {
+            margin: 5px 0 0 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+        }
+
+        .profile-dropdown-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-dropdown-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .profile-dropdown-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Убираем кнопку выхода из выпадающего меню */
+        .profile-dropdown-link.logout-link {
+            display: none;
+        }
+
+        /* Темная тема */
+        .dark-theme .glass-profile-dropdown {
+            background: rgba(40, 40, 48, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .glass-profile-dropdown {
+                width: 280px;
+                right: 0;
+                left: auto;
+            }
+            
+            .profile-dropdown-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-dropdown-avatar {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .nav-status-indicator {
+                width: 10px;
+                height: 10px;
+                margin-left: 6px;
+            }
+            
+            .status-tooltip {
+                font-size: 11px;
+                padding: 8px;
+            }
+            
+            .user-profile-btn span {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body class="{% if request.COOKIES.theme == 'dark' %}dark-theme{% endif %}">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: block; height: 0; width: 0;">
@@ -17,7 +229,7 @@
         <filter id="gooey">
           <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
           <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-          <feBlend in="SourceGraphic" in2="goo" />
+          <feBlend in="SourceGraphic" in2='goo' />
         </filter>
       </defs>
     </svg>
@@ -26,13 +238,58 @@
         <div class="header-content">
             <div class="user-profile-container">
                 {% if user.is_authenticated %}
-                <div class="user-profile-btn">
+                <div class="user-profile-btn" id="user-profile-toggle">
                     {% if user.profile.avatar %}
                         <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="user-avatar">
                     {% else %}
                         <i class="fas fa-user-circle"></i>
                     {% endif %}
                     <span>{{ user.username }}</span>
+                    
+                    <div class="nav-status-indicator status-{{ user.profile.status }}" 
+                         title="{{ user.profile.get_status_display }}">
+                        <div class="status-tooltip">
+                            {{ user.profile.get_status_display }}
+                            {% if user.profile.custom_status %}
+                            <br><small>{{ user.profile.custom_status }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-profile-dropdown" id="profile-dropdown-menu">
+                    <div class="profile-dropdown-header">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="profile-dropdown-avatar">
+                        {% else %}
+                            <i class="fas fa-user-circle profile-dropdown-avatar" style="font-size: 60px; color: #ccc;"></i>
+                        {% endif %}
+                        <div class="profile-dropdown-info">
+                            <h3>{{ user.username }}</h3>
+                            <p>{{ user.email }}</p>
+                            {% if user.is_staff %}
+                                <span style="color: #ffd700; font-size: 0.8em;">Администратор</span>
+                            {% elif user.profile.is_reporter %}
+                                <span style="color: #50e3c2; font-size: 0.8em;">Репортёр</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="profile-dropdown-links">
+                        <a href="{% url 'news:profile' %}" class="profile-dropdown-link">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Настройки профиля</span>
+                        </a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}" class="profile-dropdown-link">
+                            <i class="fas fa-tools"></i>
+                            <span>Панель администратора</span>
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'news:logout' %}" class="profile-dropdown-link logout-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </a>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -141,8 +398,70 @@
                 });
             });
 
+            // Dropdown menu functionality
+            const userProfileToggle = document.getElementById('user-profile-toggle');
+            const profileDropdownMenu = document.getElementById('profile-dropdown-menu');
+
+            if (userProfileToggle) {
+                userProfileToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileDropdownMenu.classList.toggle('show-dropdown');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!profileDropdownMenu.contains(e.target) && !userProfileToggle.contains(e.target)) {
+                        profileDropdownMenu.classList.remove('show-dropdown');
+                    }
+                });
+            }
+
             const themeEvent = new Event('themeChanged');
             document.dispatchEvent(themeEvent);
+
+            // Функция для обновления статуса в навигации
+            function updateNavStatus() {
+                fetch('{% url "news:get_user_status" %}', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status) {
+                        const statusIndicator = document.querySelector('.nav-status-indicator');
+                        if (statusIndicator) {
+                            // Убираем все классы статусов
+                            statusIndicator.classList.remove('status-online', 'status-idle', 'status-dnd', 'status-offline', 'status-invisible');
+                            // Добавляем текущий класс статуса
+                            statusIndicator.classList.add(`status-${data.status}`);
+                            // Обновляем title
+                            statusIndicator.title = data.status_display;
+                            // Обновляем текст в тултипе
+                            const tooltip = statusIndicator.querySelector('.status-tooltip');
+                            if (tooltip) {
+                                tooltip.innerHTML = data.status_display;
+                                if (data.custom_status) {
+                                    tooltip.innerHTML += `<br><small>${data.custom_status}</small>`;
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => console.error('Ошибка обновления статуса:', error));
+            }
+
+            // Обновляем статус при загрузке и каждые 30 секунд
+            updateNavStatus();
+            setInterval(updateNavStatus, 30000);
+
+            // Обновляем статус при изменении через выпадающее меню
+            document.addEventListener('statusChanged', updateNavStatus);
         });
     </script>
 </body>

@@ -1,4 +1,3 @@
-# news/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User as AuthUser
@@ -12,41 +11,19 @@ from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 import datetime
 from django.utils import timezone
-from .models import NewsItem, AboutPage, Reporter, Comment
+from .models import NewsItem, AboutPage, Reporter, Comment, UserProfile
 from django.contrib.auth.decorators import login_required
 import json
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
+from .forms import EmailUserCreationForm, UserProfileForm
 
 User = get_user_model()
 
-# Кастомная форма регистрации с email
-class EmailUserCreationForm(UserCreationForm):
-    email = forms.EmailField(
-        label='Email',
-        required=True,
-        widget=forms.EmailInput(attrs={'class': 'form-input'})
-    )
-    
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
-    
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("Этот email уже используется")
-        return email
-    
-
 def landing_page(request):
-    """
-    Отображает главную страницу с новостями и информацией "О нас".
-    """
     about_page = AboutPage.objects.first()
     news_items = NewsItem.objects.all().order_by('-created_at')
     
-    # Если новости не были созданы, используем жёстко закодированные данные
     if not news_items:
         geo_reporter, _ = Reporter.objects.get_or_create(
             user__username='geo_reporter',
@@ -91,9 +68,8 @@ def landing_page(request):
             ),
         ]
 
-    # Добавляем комментарии для отображения на главной странице
     for item in news_items:
-        item.latest_comments = item.comments.all().order_by('-created_at')[:3]
+        item.latest_comments = item.comments.all().select_related('user__profile').order_by('-created_at')[:3]
         item.comment_count = item.comments.count()
     
     context = {
@@ -105,11 +81,8 @@ def landing_page(request):
 
 @login_required
 def news_comments(request, news_id):
-    """
-    Displays the news comments page and handles form submission.
-    """
     news_item = get_object_or_404(NewsItem, id=news_id)
-    comments = news_item.comments.all()
+    comments = news_item.comments.all().select_related('user__profile')
 
     context = {
         'news_item': news_item,
@@ -117,13 +90,9 @@ def news_comments(request, news_id):
     }
     return render(request, 'news/news_comments.html', context)
 
-
 @login_required
 @require_POST
 def add_comment(request, news_id):
-    """
-    Handles the creation of a new comment for a news article.
-    """
     news_item = get_object_or_404(NewsItem, pk=news_id)
     comment_text = request.POST.get('comment_text', '')
     
@@ -142,7 +111,6 @@ def add_comment(request, news_id):
             comment_data['audio_file'] = request.FILES['audio']
             comment_data['is_voice_message'] = True
             
-            # Получаем длительность голосового сообщения из формы
             voice_duration = request.POST.get('voice_duration', 0)
             try:
                 comment_data['audio_duration'] = int(voice_duration)
@@ -152,18 +120,13 @@ def add_comment(request, news_id):
         elif comment_text:
             comment_data['text'] = comment_text
         
-        # Сохраняем комментарий в базе данных
         new_comment = Comment.objects.create(**comment_data)
-
-        # Рендерим HTML для нового комментария
         comment_html = render_to_string('news/comment_partial.html', {'comment': new_comment}, request=request)
 
         return JsonResponse({'status': 'success', 'message': 'Комментарий отправлен', 'comment_html': comment_html})
     
     except Exception as e:
-        print(f"Ошибка при отправке комментария: {e}")
         return JsonResponse({'status': 'error', 'message': f'Ошибка при отправке комментария: {str(e)}'}, status=400)
-
 
 def register_user(request):
     if request.method == 'POST':
@@ -172,17 +135,17 @@ def register_user(request):
             user = form.save()
             user.email = form.cleaned_data['email']
             user.save()
+            
+            UserProfile.objects.create(user=user)
+            
             login(request, user)
             messages.success(request, 'Вы успешно зарегистрировались! Добро пожаловать!')
-            messages.info(request, 'Пожалуйста, заполните ваш профиль для полного доступа к функциям сайта.')
             return redirect('news:landing')
         else:
-            messages.error(request, 'Ошибка регистрации. Пожалуйста, исправьте следующие ошибки:')
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{form.fields[field].label}: {error}")
     else:
-        messages.info(request, 'Пожалуйста, заполните все поля для регистрации.')
         form = EmailUserCreationForm()
     
     return render(request, 'registration/register.html', {'form': form})
@@ -194,19 +157,10 @@ def login_user(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, f'Добро пожаловать, {user.username}!')
-            
-            if not user.last_login:
-                messages.info(request, 'Это ваш первый вход. Рекомендуем сменить пароль в настройках профиля.')
-            else:
-                messages.info(request, f'Последний раз вы заходили {user.last_login.strftime("%d.%m.%Y в %H:%M")}')
             return redirect('news:landing')
         else:
             messages.error(request, 'Ошибка входа. Проверьте правильность введенных данных.')
-            
-            if AuthUser.objects.filter(username=request.POST.get('username')).exists():
-                messages.info(request, 'Забыли пароль? Вы можете <a href="/password_reset/">восстановить его</a>.')
     else:
-        messages.info(request, 'Пожалуйста, введите ваши учетные данные для входа.')
         form = AuthenticationForm()
     
     return render(request, 'registration/login.html', {'form': form})
@@ -216,10 +170,6 @@ def logout_user(request):
         username = request.user.username
         logout(request)
         messages.success(request, f'Вы успешно вышли из системы. До свидания, {username}!')
-        messages.info(request, 'Вы можете снова войти в любое время.')
-    else:
-        messages.warning(request, 'Вы не были авторизованы.')
-    
     return redirect('news:landing')
 
 @csrf_exempt
@@ -230,3 +180,90 @@ def increment_views(request, news_id):
         news_item.save()
         return JsonResponse({'status': 'success', 'views': news_item.views})
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def profile_view(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('news:profile')
+    else:
+        form = UserProfileForm(instance=profile)
+    
+    return render(request, 'profile.html', {'form': form})
+
+@login_required
+@require_POST
+@csrf_exempt
+def update_avatar(request):
+    try:
+        if 'avatar' in request.FILES:
+            profile, created = UserProfile.objects.get_or_create(user=request.user)
+            
+            if profile.avatar:
+                profile.avatar.delete()
+            
+            profile.avatar = request.FILES['avatar']
+            profile.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Аватар успешно обновлен',
+                'avatar_url': profile.avatar.url
+            })
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Файл не выбран'
+            }, status=400)
+            
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Ошибка при загрузке аватара: {str(e)}'
+        }, status=500)
+
+@login_required
+@require_POST
+def update_activity(request):
+    if request.user.is_authenticated:
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile.last_activity = timezone.now()
+        profile.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+@require_POST
+def update_status(request):
+    status = request.POST.get('status')
+    
+    if status in dict(UserProfile.STATUS_CHOICES).keys():
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile.status = status
+        profile.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Статус обновлен'
+        })
+    
+    return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+@require_GET
+def get_user_status(request):
+    """Возвращает JSON с данными о статусе пользователя."""
+    try:
+        profile = request.user.profile
+        return JsonResponse({
+            'status': profile.status,
+            'status_display': profile.get_status_display(),
+            'custom_status': profile.custom_status,
+        })
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'status': 'offline', 'status_display': 'Не в сети'}, status=404)

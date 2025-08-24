@@ -1,0 +1,265 @@
+/* Основной контейнер профиля */
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* Убрали свойство gap */
+    max-width: 1200px;
+    margin: right;
+    padding: 20px;
+}
+
+/* Колонка с информацией (левая) */
+.profile-info-column {
+    grid-column: 1;
+    margin-right: 20px; /* Добавили отступ справа */
+}
+
+/* Колонка с настройками (центральная) */
+.profile-settings-column {
+    grid-column: 2;
+    margin-right: 20px; /* Добавили отступ справа */
+}
+
+/* Колонка с аналитикой (правая) */
+.profile-analytics-column {
+    grid-column: 3;
+}
+
+/* Карточки профиля */
+.profile-card {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+/* Заголовок профиля */
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    cursor: pointer;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-avatar-icon {
+    font-size: 120px;
+    color: #ccc;
+}
+
+.edit-avatar-overlay {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-avatar-wrapper:hover .edit-avatar-overlay {
+    opacity: 1;
+}
+
+.profile-username-wrapper h2 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+.unique-username {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Детали профиля */
+.profile-details {
+    margin-top: 20px;
+}
+
+.profile-details p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.profile-details .icon {
+    width: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.profile-bio {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+/* Бейджи статуса */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.status-badge.reporter {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196f3;
+}
+
+/* Форма настроек */
+.profile-form {
+    margin-top: 15px;
+}
+
+.profile-form .form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.submit-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+}
+
+.change-password-link {
+    display: block;
+    margin-top: 15px;
+    color: #667eea;
+    text-decoration: none;
+}
+
+.change-password-link:hover {
+    text-decoration: underline;
+}
+
+/* Аналитика */
+.analytics-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+}
+
+.analytics-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-list li:last-child {
+    border-bottom: none;
+}
+
+.create-news-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: transform 0.3s ease;
+}
+
+.create-news-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .profile-info-column,
+    .profile-settings-column,
+    .profile-analytics-column {
+        grid-column: 1;
+        margin-right: 0; /* Убираем отступы на мобильных */
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 10px;
+    }
+    
+    .profile-avatar-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .profile-avatar-icon {
+        font-size: 100px;
+    }
+}
+
+/* Темная тема */
+.dark-theme .profile-card {
+    background: rgba(40, 40, 48, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .profile-form .form-input {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.dark-theme .profile-bio {
+    background: rgba(255, 255, 255, 0.05);
+}

@@ -1,141 +1,296 @@
-/* forms.css */
-
-/* Контейнер для карточки, центрирует ее по горизонтали и смещает вниз */
-.form-card-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Центрируем по вертикали */
-    min-height: 100vh; /* Используем всю высоту viewport для центрирования */
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 10;
-}
-
-/* Стилизация "стеклянной" карточки для входа и регистрации */
-.glass-card {
-    width: 100%;
-    max-width: 450px;
+/* Основной контейнер профиля */
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 30px; /* Уменьшаем общий gap между всеми колонками */
+    max-width: 1300px;
+    margin: 80px auto;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    text-align: center;
-    transform: translateY(-20px); /* Поднимаем карточку немного выше */
 }
 
-/* Стилизация "стеклянной" карточки для регистрации (register) */
-/* Этот класс может использоваться для дополнительных стилей, если необходимо */
-.register-glass-card {
-    padding-top: 20px;
-    padding-bottom: 20px;
+/* Информация о профиле - делаем ближе к настройкам */
+.profile-info-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 140px;
+    height: fit-content;
+    min-width: 300px;
+    margin-right: -10px; /* Придвигаем ближе к настройкам */
 }
 
-/* Заголовок формы */
-.glass-card h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+/* Настройки профиля - придвигаем ближе к информации */
+.profile-settings-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-width: 350px;
+    margin-left: 15px; /* Придвигаем ближе к информации */
 }
 
-/* Контейнер для каждого поля формы */
-.form-field {
-    margin-bottom: 20px;
-    text-align: left;
+/* Аналитика - оставляем нормальное расстояние */
+.profile-analytics-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-width: 280px;
 }
 
-/* Стилизация метки поля */
-.form-label {
-    display: block;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+/* Уменьшаем тень для карточки информации чтобы визуально сделать ее ближе */
+.profile-info-column .glass-card {
+    padding: 35px 30px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15); /* Более легкая тень */
 }
 
-/* Стилизация поля ввода */
-.form-input {
-    width: 100%;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
+/* Уменьшаем тень для карточки настроек */
+.profile-settings-column .glass-card {
+    padding: 35px 30px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15); /* Более легкая тень */
 }
 
-.form-input:focus {
-    background: rgba(255, 255, 255, 0.3);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(97, 179, 220, 0.3);
+/* Аналитика остается с нормальной тенью для визуального разделения */
+.profile-analytics-column .glass-card {
+    padding: 35px 30px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Сохраняем нормальную тень */
 }
 
-.form-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    opacity: 1;
-}
-
-/* Кнопка отправки формы */
-.submit-btn {
-    width: 100%;
-    padding: 12px;
-    background: #61b3dc;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
+/* Аватар */
+.profile-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 25px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    margin-top: 10px;
 }
 
-.submit-btn:hover {
-    background: #4a90e2;
-    transform: translateY(-2px);
-}
-
-/* Ссылки авторизации/регистрации */
-.auth-link {
-    margin-top: 20px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.auth-link a {
-    color: #61dca3;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.auth-link a:hover {
-    color: #fff;
-    text-decoration: underline;
-}
-
-/* Стили для ошибок формы */
-.form-errors {
-    margin-top: 10px;
+/* Детали профиля */
+.profile-details {
+    width: 100%;
+    margin-top: 30px;
     text-align: left;
 }
 
-.form-errors li, .error-message {
-    color: #bd10e0;
-    font-size: 0.9rem;
-    list-style-type: none;
-    margin-bottom: 5px;
+.profile-details p {
+    margin: 18px 0;
+    font-size: 1em;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 5px 0;
 }
 
-/* Стили для ошибок полей (field-errors) */
-.field-errors {
-    color: #bd10e0;
-    font-size: 0.9rem;
-    margin-top: 5px;
+/* Биография */
+.profile-bio {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Форма настроек */
+.profile-form {
+    margin-top: 25px;
+}
+
+.profile-form .form-input,
+.profile-form select,
+.profile-form textarea {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px;
+}
+
+/* Кнопка сохранить */
+.submit-btn {
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 1.1em;
+}
+
+/* Ссылка смены пароля */
+.change-password-link {
+    display: block;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    color: #61b3dc;
+    text-decoration: none;
+    border: 1px solid rgba(97, 179, 220, 0.3);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.change-password-link:hover {
+    background: rgba(97, 179, 220, 0.1);
+    color: #4a90e2;
+}
+
+/* Аналитика */
+.analytics-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 25px;
+}
+
+.analytics-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-list li:last-child {
+    border-bottom: none;
+}
+
+/* Отступы между карточками ВНУТРИ колонок */
+.profile-settings-column .glass-card {
+    margin-bottom: 25px;
+}
+
+.profile-settings-column .glass-card:last-child {
+    margin-bottom: 0;
+}
+
+.profile-analytics-column .glass-card {
+    margin-bottom: 25px;
+}
+
+.profile-analytics-column .glass-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .profile-container {
+        grid-template-columns: 1fr 1.2fr 1fr;
+        gap: 25px; /* Уменьшаем gap на планшетах */
+        max-width: 1100px;
+        padding: 30px;
+    }
+    
+    .profile-info-column {
+        margin-right: -5px;
+    }
+    
+    .profile-settings-column {
+        margin-left: -5px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+        gap: 30px; /* Нормальный gap для мобильных */
+        margin: 60px auto;
+        padding: 25px;
+        max-width: 600px;
+    }
+    
+    .profile-info-column,
+    .profile-settings-column,
+    .profile-analytics-column {
+        position: static;
+        width: 100%;
+        min-width: auto;
+        align-items: center;
+        margin-right: 0;
+        margin-left: 0;
+    }
+    
+    .profile-info-column {
+        order: 1;
+    }
+    
+    .profile-settings-column {
+        order: 2;
+    }
+    
+    .profile-analytics-column {
+        order: 3;
+    }
+    
+    .profile-card.glass-card {
+        padding: 30px 25px;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Восстанавливаем тень на мобильных */
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        margin: 40px auto;
+        padding: 20px;
+        gap: 25px;
+    }
+    
+    .glass-card {
+        padding: 25px 20px;
+    }
+    
+    .profile-avatar-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .profile-avatar-icon {
+        font-size: 120px;
+    }
+    
+    .profile-details p {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .profile-details p .icon {
+        font-size: 1.4em;
+    }
+    
+    .profile-settings-column .glass-card,
+    .profile-analytics-column .glass-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Дополнительные стили */
+.profile-card.glass-card {
+    min-height: 200px;
+}
+
+/* Визуальное разделение с помощью границ для карточек */
+.create-news-card {
+    border-left: 3px solid rgba(97, 179, 220, 0.3);
+}
+
+.analytics-card {
+    border-left: 3px solid rgba(82, 190, 128, 0.3);
+}
+
+.create-news-card:hover {
+    border-left-color: rgba(97, 179, 220, 0.6);
+}
+
+.analytics-card:hover {
+    border-left-color: rgba(82, 190, 128, 0.6);
+}
+
+/* Плавные переходы для лучшего визуального эффекта */
+.profile-info-column .glass-card,
+.profile-settings-column .glass-card {
+    transition: all 0.3s ease;
+}
+
+.profile-info-column .glass-card:hover,
+.profile-settings-column .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.18);
 }

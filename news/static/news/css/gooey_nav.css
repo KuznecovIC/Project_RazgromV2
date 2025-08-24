@@ -850,3 +850,100 @@ body.dark-theme .github-card-container:hover .github-card {
 body.dark-theme .github-link {
   color: #e0e0e0;
 }
+
+.user-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Кружочек статуса в навигации */
+    .nav-status-indicator {
+        position: relative;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-left: 8px;
+        border: 2px solid var(--bg-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .nav-status-indicator:hover {
+        transform: scale(1.2);
+    }
+
+    .nav-status-indicator.status-online { background-color: #23a55a; }
+    .nav-status-indicator.status-idle { background-color: #f0b232; }
+    .nav-status-indicator.status-dnd { background-color: #f23f43; }
+    .nav-status-indicator.status-offline { background-color: #80848e; }
+    .nav-status-indicator.status-invisible { background-color: #80848e; }
+
+    /* Подсказка статуса */
+    .status-tooltip {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(47, 49, 54, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 12px;
+        color: #fff;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1001;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .status-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: rgba(47, 49, 54, 0.95) transparent transparent transparent;
+    }
+
+    .status-tooltip small {
+        color: #b9bbbe;
+        font-size: 11px;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .nav-status-indicator:hover .status-tooltip {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+        .nav-status-indicator {
+            width: 10px;
+            height: 10px;
+            margin-left: 6px;
+        }
+        
+        .status-tooltip {
+            font-size: 11px;
+            padding: 8px;
+        }
+        
+        .user-profile-btn span {
+            display: none;
+        }
+   }

@@ -74,12 +74,35 @@ body.dark-theme {
     border-bottom-right-radius: 5px;
 }
 
+/* Стили для аватаров в комментариях */
+.message-user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.message-user-icon {
+    font-size: 24px;
+    margin-right: 8px;
+    color: #61b3dc;
+}
+
+.post-reporter-icon {
+    font-size: 24px;
+    margin-right: 8px;
+    color: #61b3dc;
+}
+
 /* Заголовок сообщения (автор и дата) */
 .message-header {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-bottom: 5px;
+    font-size: 0.9em;
 }
 
 .message-author {
@@ -90,12 +113,6 @@ body.dark-theme {
 .message-date {
     font-size: 0.7em;
     color: rgba(255, 255, 255, 0.7);
-}
-
-.post-reporter-icon,
-.message-user-icon {
-    font-size: 1.2em;
-    color: #fff;
 }
 
 .empty-comments-message {

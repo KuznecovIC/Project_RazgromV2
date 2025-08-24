@@ -1,35 +1,36 @@
-# news/admin.py
-
 from django.contrib import admin
-from .models import Reporter, NewsItem, AboutPage, Comment
+from .models import Reporter, NewsItem, AboutPage, Comment, UserProfile
 
-# Регистрация модели Reporter
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'status', 'is_reporter', 'last_activity')
+    list_filter = ('status', 'is_reporter')
+    search_fields = ('user__username',)
+    actions = ['make_reporter', 'remove_reporter']
+    
+    def make_reporter(self, request, queryset):
+        queryset.update(is_reporter=True)
+    make_reporter.short_description = "Сделать репортёром"
+    
+    def remove_reporter(self, request, queryset):
+        queryset.update(is_reporter=False)
+    remove_reporter.short_description = "Убрать статус репортёра"
+
 @admin.register(Reporter)
 class ReporterAdmin(admin.ModelAdmin):
     list_display = ('user', 'specialization', 'hire_date')
     search_fields = ('user__username', 'specialization')
 
-# Регистрация модели NewsItem
 @admin.register(NewsItem)
 class NewsItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'reporter', 'created_at')
+    list_display = ('title', 'reporter', 'created_at', 'views')
     list_filter = ('reporter', 'created_at')
+    search_fields = ('title', 'text')
 
-# Регистрация модели AboutPage
 @admin.register(AboutPage)
 class AboutPageAdmin(admin.ModelAdmin):
     list_display = ('title',)
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'description', 'team_photo')
-        }),
-        ('Статистика', {
-            'fields': ('stats',),
-            'classes': ('collapse',)
-        }),
-    )
 
-# Регистрация модели Comment
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('user', 'news_item', 'created_at')

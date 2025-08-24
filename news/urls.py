@@ -1,29 +1,25 @@
-# Файл: news/urls.py (внутри вашего приложения news)
-
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from . import views
-# from .forms import CustomPasswordResetForm, CustomSetPasswordForm # Убедитесь, что эти формы существуют
 
-app_name = 'news' # Пространство имен для приложения 'news'
+app_name = 'news'
 
 urlpatterns = [
-    # Основные URL приложения
     path('', views.landing_page, name='landing'),
     path('register/', views.register_user, name='register'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     
-    # URL для страницы комментариев
     path('<int:news_id>/comments/', views.news_comments, name='news_comments'),
-    
-    # URL для добавления комментария
     path('<int:news_id>/add_comment/', views.add_comment, name='add_comment'),
-
     path('news/<int:news_id>/increment_views/', views.increment_views, name='increment_views'),
-    
-    # URL для сброса пароля (здесь я оставил его как у вас, но важно убедиться, 
-    # что CustomPasswordResetForm и CustomSetPasswordForm импортируются или что вы используете стандартные формы Django).
+
+    path('profile/', views.profile_view, name='profile'),
+    path('update_avatar/', views.update_avatar, name='update_avatar'),
+    path('update_activity/', views.update_activity, name='update_activity'),
+    path('update_status/', views.update_status, name='update_status'),
+    path('get_user_status/', views.get_user_status, name='get_user_status'),
+        
     path('password_reset/', 
          auth_views.PasswordResetView.as_view(
              template_name='registration/password_reset_form.html',

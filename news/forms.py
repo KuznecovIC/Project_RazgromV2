@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.core.exceptions import ValidationError
+from .models import UserProfile
 
-User = get_user_model()  # Получаем активную модель пользователя
+User = get_user_model()
 
 class EmailUserCreationForm(UserCreationForm):
     email = forms.EmailField(
@@ -13,7 +14,7 @@ class EmailUserCreationForm(UserCreationForm):
     )
     
     class Meta:
-        model = User  # Используем полученную модель пользователя
+        model = User
         fields = ('username', 'email', 'password1', 'password2')
     
     def clean_email(self):
@@ -21,6 +22,28 @@ class EmailUserCreationForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError("Этот email уже используется")
         return email
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'status', 'custom_status']
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'class': 'form-input', 
+                'rows': 4, 
+                'placeholder': 'Расскажите о себе...'
+            }),
+            'status': forms.Select(attrs={'class': 'form-input'}),
+            'custom_status': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Ваш статус...'
+            }),
+        }
+        labels = {
+            'bio': 'Биография',
+            'status': 'Статус',
+            'custom_status': 'Пользовательский статус',
+        }
 
 class CustomPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(

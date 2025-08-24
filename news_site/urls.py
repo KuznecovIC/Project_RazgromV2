@@ -12,6 +12,8 @@ urlpatterns = [
     
     # Это URL-адрес для админ-панели Django.
     path('admin/', admin.site.urls),
+
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 # Добавляем маршруты для медиафайлов только в режиме DEBUG

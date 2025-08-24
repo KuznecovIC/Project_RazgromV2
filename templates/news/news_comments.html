@@ -16,21 +16,33 @@
     <div class="comments-container">
         <div class="telegram-message post-message">
             <div class="message-header">
-                <i class="fas fa-user-circle post-reporter-icon"></i>
+                {% if news_item.reporter.user.profile.avatar %}
+                    <img src="{{ news_item.reporter.user.profile.avatar.url }}" alt="Аватар {{ news_item.reporter.user.username }}" class="message-user-avatar">
+                {% else %}
+                    <i class="fas fa-user-circle post-reporter-icon"></i>
+                {% endif %}
                 <span class="message-author">{{ news_item.reporter }}</span>
                 <span class="message-date">{{ news_item.created_at|date:"d M Y в H:i" }}</span>
             </div>
             <div class="message-content">
                 <h2 class="post-title">{{ news_item.title }}</h2>
                 <p class="post-text">{{ news_item.text }}</p>
-                <img src="{% static 'news/images/news' %}{{ news_item.id }}.jpg" alt="News Image" class="post-image">
+                {% if news_item.image %}
+                    <img src="{{ news_item.image.url }}" alt="News Image" class="post-image">
+                {% else %}
+                    <img src="{% static 'news/images/news' %}{{ news_item.id }}.jpg" alt="News Image" class="post-image">
+                {% endif %}
             </div>
         </div>
         
-        {% for comment in news_item.comments.all %}
+        {% for comment in comments %}
         <div class="telegram-message comment-message">
             <div class="message-header">
-                <i class="fas fa-user-circle message-user-icon"></i>
+                {% if comment.user.profile.avatar %}
+                    <img src="{{ comment.user.profile.avatar.url }}" alt="Аватар {{ comment.user.username }}" class="message-user-avatar">
+                {% else %}
+                    <i class="fas fa-user-circle message-user-icon"></i>
+                {% endif %}
                 <span class="message-author">{{ comment.user.username }}</span>
                 <span class="message-date">{{ comment.created_at|date:"d M Y в H:i" }}</span>
             </div>
@@ -94,7 +106,6 @@
         </div>
     </div>
 
-    {# Модальное окно голосового сообщения с кнопкой выхода #}
     <div class="voice-modal">
         <div class="voice-modal-content">
             <div class="voice-timer">
